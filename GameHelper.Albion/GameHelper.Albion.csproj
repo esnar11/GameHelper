@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Albion.Common" Version="4.0.0" />
+    <PackageReference Include="Albion.Network" Version="5.0.0" />
+    <PackageReference Include="SharpPcap" Version="5.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameHelper.Interfaces\GameHelper.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
