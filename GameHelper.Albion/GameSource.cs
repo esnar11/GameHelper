@@ -20,6 +20,8 @@ namespace GameHelper.Albion
 
         public string Name => "Albion";
         
+        public Character Avatar { get; } = new Character();
+
         public void Connect()
         {
             var builder = ReceiverBuilder.Create();
@@ -39,7 +41,8 @@ namespace GameHelper.Albion
                         _devices.Add(device);
                     });
 
-            EventsSource = new EventsSource(IncomeLowEventsSource);
+            EventsSource = new EventsSource(IncomeLowEventsSource, BuffRepository, Avatar);
+            Connected?.Invoke();
         }
 
         public void Disconnect()
@@ -50,13 +53,19 @@ namespace GameHelper.Albion
                 device.StopCapture();
                 device.Close();
             }
+            Disconnected?.Invoke();
         }
+
+        public event Action Connected;
+        public event Action Disconnected;
 
         public ILowEventsSource IncomeLowEventsSource { get; private set; }
 
         public ILowEventsSource OutcomeLowEventsSource { get; private set; }
 
         public IEventsSource EventsSource { get; private set; }
+        
+        public IRepository<BuffInfo> BuffRepository => new BuffRepository();
 
         private void PacketHandler(object sender, CaptureEventArgs e)
         {
@@ -67,10 +76,13 @@ namespace GameHelper.Albion
                     if (_serverUdpPorts.Contains(packet.SourcePort) || _serverUdpPorts.Contains(packet.DestinationPort))
                         _receiver.ReceivePacket(packet.PayloadData);
             }
-            catch (Exception exception)
+            catch (ArgumentException exception)
             {
                 Debug.WriteLine(exception);
-                throw;
+            }
+            catch (IndexOutOfRangeException exception)
+            {
+                Debug.WriteLine(exception);
             }
         }
     }

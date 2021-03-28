@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="..\..\..\..\Exterminatus\Exterminatus.Server\Exterminatus.Model\ICloneable.cs" Link="ICloneable.cs" />
+    <Compile Include="..\..\..\..\Exterminatus\Exterminatus.Server\Exterminatus.Model\Range.cs" Link="Range.cs" />
+  </ItemGroup>
+
 </Project>

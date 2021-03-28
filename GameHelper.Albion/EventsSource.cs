@@ -11,7 +11,12 @@ namespace GameHelper.Albion
 {
     internal class EventsSource: IEventsSource
     {
+        private readonly IRepository<BuffInfo> _buffRepository;
+        private readonly Character _avatar;
         private const int Channel_Group = 63234;
+        private const string AvatarName = "Infernalis";
+        private readonly IDictionary<string, int> _characterIds = new Dictionary<string, int>();
+        private int _avatarId;
 
         private static readonly IReadOnlyDictionary<int, string> Channels = new Dictionary<int, string>
         {
@@ -27,8 +32,10 @@ namespace GameHelper.Albion
 
         private ChatMessage _prevMessage;
 
-        public EventsSource(ILowEventsSource lowEventsSource)
+        public EventsSource(ILowEventsSource lowEventsSource, IRepository<BuffInfo> buffRepository, Character avatar)
         {
+            _buffRepository = buffRepository ?? throw new ArgumentNullException(nameof(buffRepository));
+            _avatar = avatar ?? throw new ArgumentNullException(nameof(avatar));
             lowEventsSource.Event += LowEventsSource_Event;
         }
 
@@ -38,6 +45,62 @@ namespace GameHelper.Albion
             {
                 switch ((EventCodes)code)
                 {
+                    case EventCodes.UpdateMatchDetails:
+                        break;
+
+                    case EventCodes.TreasureChestUsingFinished:
+                        if ((string)parameters[2] == AvatarName)
+                            _avatarId = Utils.ToInt(parameters[0]);
+                        break;
+
+                    case EventCodes.Leave:
+                        if (Utils.ToInt(parameters[0]) == _avatarId)
+                            _avatarId = default;
+                        break;
+
+                    case EventCodes.ActiveSpellEffectsUpdate:
+                        if (BuffAdded != null)
+                        {
+                            if (Utils.ToInt(parameters[0]) != _avatarId)
+                                break;
+
+                            if (!(parameters[3] is long[]))
+                                break;
+
+                            var longs = (long[])parameters[3];
+                            var serverTime = DateTime.FromBinary(longs[^1]);
+                            var clientTime = DateTime.UtcNow;
+                            var delta = clientTime - serverTime;
+
+                            if (parameters.ContainsKey(7))
+                            {
+                                double dur = 0;
+                                if (parameters[7] is short)
+                                    dur = (short)parameters[7];
+                                if (parameters[7] is short[])
+                                    dur = ((short[])parameters[7])[0];
+                                if (parameters[7] is int[])
+                                    dur = ((int[])parameters[7])[0];
+                                var duration = TimeSpan.FromMilliseconds(dur);
+
+                                if (duration < TimeSpan.FromMinutes(1))
+                                {
+                                    var buffTypeId = ((short[])parameters[1])[^1];
+                                    var buffInfo = _buffRepository.GetById(buffTypeId);
+                                    if (!buffInfo.IsInvisible)
+                                    {
+                                        var buff = new Buff
+                                        {
+                                            Name = buffInfo.Name,
+                                            BeginTime = serverTime,
+                                            EndTime = clientTime + duration + delta
+                                        };
+                                        BuffAdded?.Invoke(buff);
+                                    }
+                                }
+                            }
+                        }
+                        break;
                     case EventCodes.ChatMessage:
                     case EventCodes.ChatSay:
                     case EventCodes.ChatWhisper:
@@ -49,7 +112,7 @@ namespace GameHelper.Albion
                             if (parameters.TryGetValue(1, out var p1))
                                 if (parameters.TryGetValue(2, out var p2))
                                 {
-                                    var channelNumber = ToInt(channel);
+                                    var channelNumber = Utils.ToInt(channel);
                                     if (channelNumber > 16000)
                                         channelNumber = Channel_Group;
                                     if (Channels.ContainsKey(channelNumber))
@@ -73,12 +136,30 @@ namespace GameHelper.Albion
                                             break;
                                         ChatMessage?.Invoke(chatMessage);
                                         _prevMessage = chatMessage;
-                                        break;
                                     }
                                 }
-                        Debug.WriteLine("------------------------------");
-                        foreach (var pair in parameters)
-                            Debug.WriteLine($"{pair.Key}; {CustomEventHandler.ToString(pair.Value)}");
+                        break;
+
+                    case EventCodes.HealthUpdate:
+                        if (HealthChange != null)
+                        {
+                            var healthChange = new HealthChange { TargetId = Utils.ToInt(parameters[0]) };
+                            if (parameters.TryGetValue(6, out var sourceId))
+                                healthChange.SourceId = Utils.ToInt(sourceId);
+                            if (parameters.TryGetValue(2, out var changeHP))
+                                healthChange.Value = (float)changeHP;
+                            if (parameters.TryGetValue(7, out var skillId))
+                                healthChange.SkillId = Utils.ToInt(skillId);
+                            HealthChange?.Invoke(healthChange);
+                        }
+
+                        if (_avatarId == Utils.ToInt(parameters[0]))
+                        {
+                            var cur = Utils.ToInt(parameters[3]);
+                            if (_avatar.HP.Max < cur)
+                                _avatar.HP.Max = cur;
+                            _avatar.HP.Value = cur;
+                        }
 
                         break;
                 }
@@ -109,8 +190,15 @@ namespace GameHelper.Albion
         }
 
         public event Action<ChatMessage> ChatMessage;
+        
+        public event Action<HealthChange> HealthChange;
+        
+        public event Action<Buff> BuffAdded;
+    }
 
-        internal static int ToInt(object obj)
+    internal static class Utils
+    {
+        public static int ToInt(object obj)
         {
             if (obj is int i)
                 return i;
@@ -121,7 +209,54 @@ namespace GameHelper.Albion
             if (obj is byte b)
                 return b;
 
+            if (obj is float f)
+                return (int)f;
+
             throw new NotImplementedException();
+        }
+
+        public static bool TryToInt(object obj, out int value)
+        {
+            if (obj is int i)
+            {
+                value = i;
+                return true;
+            }
+
+            if (obj is short s)
+            {
+                value = s;
+                return true;
+            }
+
+            if (obj is byte b)
+            {
+                value = b;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public static string ToString(object value)
+        {
+            if (value.GetType() == typeof(byte[]))
+                return string.Join(", ", (byte[])value);
+
+            if (value.GetType() == typeof(short[]))
+                return string.Join(", ", (short[])value);
+
+            if (value.GetType() == typeof(int[]))
+                return string.Join(", ", (int[])value);
+
+            if (value.GetType() == typeof(long[]))
+                return string.Join(", ", (long[])value);
+
+            if (value.GetType() == typeof(float[]))
+                return string.Join(", ", (float[])value);
+
+            return value.ToString();
         }
     }
 }

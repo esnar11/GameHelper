@@ -8,13 +8,14 @@ using System.Windows.Input;
 using GameHelper.Interfaces;
 using GameHelper.UserControls;
 using GameHelper.Windows;
+using AppContext = GameHelper.Engine.AppContext;
 
 namespace GameHelper
 {
     public partial class MainWindow
     {
-        private IGameSource _gameSource;
         private readonly ICollection<GameWindow> _windows = new List<GameWindow>();
+        private readonly AppContext _appContext = new AppContext();
 
         public MainWindow()
         {
@@ -45,8 +46,8 @@ namespace GameHelper
             {
                 Cursor = Cursors.Wait;
 
-                _gameSource = (IGameSource) ((MenuItem) sender).DataContext;
-                _gameSource.Connect();
+                _appContext.GameSource  = (IGameSource) ((MenuItem) sender).DataContext;
+                _appContext.GameSource.Connect();
                 TuneControls();
             }
             catch (Exception exception)
@@ -61,7 +62,7 @@ namespace GameHelper
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            _gameSource?.Disconnect();
+            _appContext.GameSource?.Disconnect();
 
             foreach (var window in _windows.ToArray())
                 window.Close();
@@ -80,8 +81,8 @@ namespace GameHelper
             {
                 Cursor = Cursors.Wait;
 
-                _gameSource.Disconnect();
-                _gameSource = null;
+                _appContext.GameSource.Disconnect();
+                _appContext.GameSource = null;
             }
             finally
             {
@@ -95,28 +96,28 @@ namespace GameHelper
 
         private void TuneControls()
         {
-            _miDiconnect.IsEnabled = _gameSource != null;
-            _miAnalyze.IsEnabled = _gameSource != null;
+            _miDiconnect.IsEnabled = _appContext.GameSource != null;
+            _miAnalyze.IsEnabled = _appContext.GameSource != null;
         }
 
         private void OnAnalyzeIncomeClick(object sender, RoutedEventArgs e)
         {
-            new AnalyzeLowWindow(_gameSource.IncomeLowEventsSource).Show();
+            new AnalyzeLowWindow(_appContext.GameSource.IncomeLowEventsSource).Show();
         }
 
         private void OnAnalyzeOutcomeClick(object sender, RoutedEventArgs e)
         {
-            new AnalyzeLowWindow(_gameSource.OutcomeLowEventsSource).Show();
+            new AnalyzeLowWindow(_appContext.GameSource.OutcomeLowEventsSource).Show();
         }
 
         private void OnChatClick(object sender, RoutedEventArgs e)
         {
-            if (_gameSource?.EventsSource == null)
+            if (_appContext.GameSource?.EventsSource == null)
                 return;
 
             var settings = new ChatsSettings
             {
-                Game = _gameSource.Name,
+                Game = _appContext.GameSource.Name,
                 StopWords = new []
                 {
                     "Набор", "Тяночк", "в ги", "принимаем"
@@ -124,7 +125,7 @@ namespace GameHelper
                 HighlightWords = new [] { "танк", "групп", "данж" }
             };
 
-            var chatsWindow = new GameWindow(new ChatsControl(_gameSource.EventsSource, settings))
+            var chatsWindow = new GameWindow(new ChatsControl(_appContext.GameSource.EventsSource, settings))
             {
                 Tag = nameof(ChatsControl),
                 Width = 400,
@@ -143,6 +144,54 @@ namespace GameHelper
         private void OnCreateNameClick(object sender, RoutedEventArgs e)
         {
             new CreateNameWindow().Show();
+        }
+
+        private void OnDPSClick(object sender, RoutedEventArgs e)
+        {
+            if (_appContext.GameSource?.EventsSource == null)
+                return;
+
+            var dpsWindow = new GameWindow(new MeterControl(_appContext))
+            {
+                Tag = nameof(MeterControl),
+                Width = 400,
+                Height = 300
+            };
+            dpsWindow.Closed += GameWindow_Closed;
+            dpsWindow.Show();
+            _windows.Add(dpsWindow);
+        }
+
+        private void OnBufsClick(object sender, RoutedEventArgs e)
+        {
+            if (_appContext.GameSource?.EventsSource == null)
+                return;
+
+            var buffsWindow = new GameWindow(new BuffsControl(_appContext))
+            {
+                Tag = nameof(BuffsControl),
+                Width = 300,
+                Height = 200
+            };
+            buffsWindow.Closed += GameWindow_Closed;
+            buffsWindow.Show();
+            _windows.Add(buffsWindow);
+        }
+
+        private void OnYourselfHPClick(object sender, RoutedEventArgs e)
+        {
+            if (_appContext.GameSource.Avatar == null)
+                return;
+
+            var window = new GameWindow(new RangeControl { Range = _appContext.GameSource.Avatar.HP })
+            {
+                Tag = nameof(RangeControl) + "HP",
+                Width = 300,
+                Height = 50
+            };
+            window.Closed += GameWindow_Closed;
+            window.Show();
+            _windows.Add(window);
         }
     }
 }

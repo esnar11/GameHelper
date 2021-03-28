@@ -6,6 +6,10 @@ namespace GameHelper.Interfaces
     public interface IEventsSource
     {
         event Action<ChatMessage> ChatMessage;
+
+        event Action<HealthChange> HealthChange;
+
+        event Action<Buff> BuffAdded;
     }
 
     [DebuggerDisplay("[{Channel}] {Sender}: {Message}")]
@@ -33,5 +37,27 @@ namespace GameHelper.Interfaces
 
             return true;
         }
+    }
+
+    public class HealthChange
+    {
+        public DateTime Time { get; set; } = DateTime.Now;
+
+        public int SourceId { get; set; }
+
+        public int TargetId { get; set; }
+
+        public int SkillId { get; set; }
+
+        public float Value { get; set; }
+    }
+
+    public class Buff
+    {
+        public string Name { get; set; }
+        
+        public DateTime BeginTime { get; set; }
+        
+        public DateTime EndTime { get; set; }
     }
 }

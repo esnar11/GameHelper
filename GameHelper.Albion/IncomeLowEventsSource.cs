@@ -12,7 +12,7 @@ namespace GameHelper.Albion
         {
             foreach (EventCodes code in Enum.GetValues(typeof(EventCodes)))
                 switch (code)
-            {
+                {
                     case EventCodes.Move:
                         break;
                     case EventCodes.ChatMessage:
@@ -20,16 +20,17 @@ namespace GameHelper.Albion
                     case EventCodes.ChatWhisper:
                     case EventCodes.SystemMessage:
                     case EventCodes.UtilityTextMessage:
+                    case EventCodes.HealthUpdate:
                         var eventHandler = new CustomEventHandler(code);
                         eventHandler.OnEvent += EventHandler_OnEvent;
                         builder.AddEventHandler(eventHandler);
                         break;
                     default:
-                        //var eventHandler = new CustomEventHandler(code);
-                        //eventHandler.OnEvent += EventHandler_OnEvent;
-                        //builder.AddEventHandler(eventHandler);
+                        var eventHandler2 = new CustomEventHandler(code);
+                        eventHandler2.OnEvent += EventHandler_OnEvent;
+                        builder.AddEventHandler(eventHandler2);
                         break;
-            }
+                }
         }
 
         private void EventHandler_OnEvent(EventCodes code, Dictionary<byte, object> dict)

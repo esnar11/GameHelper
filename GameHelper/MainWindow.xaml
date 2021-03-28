@@ -12,7 +12,10 @@
                 <MenuItem Header="Disconnect" x:Name="_miDiconnect" Click="OnDisconnectClick"/>
             </MenuItem>
             <MenuItem Header="Windows">
-                <MenuItem Header="Chat" Click="OnChatClick"/>
+                <MenuItem Header="Chat..." Click="OnChatClick"/>
+                <MenuItem Header="DPS..." Click="OnDPSClick"/>
+                <MenuItem Header="Buffs..." Click="OnBufsClick"/>
+                <MenuItem Header="Yourself HP..." Click="OnYourselfHPClick"/>
             </MenuItem>
             <MenuItem Header="Tools">
                 <MenuItem Header="Create name (En -> Ru)..." Click="OnCreateNameClick"/>
