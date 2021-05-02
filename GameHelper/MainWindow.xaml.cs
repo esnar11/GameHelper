@@ -23,7 +23,6 @@ namespace GameHelper
 
             var sources = new IGameSource[]
             {
-                new Allods.GameSource(),
                 new Albion.GameSource()
             };
             foreach (var gameSource in sources.OrderByDescending(gs => gs.Name))
@@ -192,6 +191,11 @@ namespace GameHelper
             window.Closed += GameWindow_Closed;
             window.Show();
             _windows.Add(window);
+        }
+
+        private void OnChatHistoryClick(object sender, RoutedEventArgs e)
+        {
+            new ChatHistoryWindow(new IChatHistoryReadonly[0]).Show();
         }
     }
 }

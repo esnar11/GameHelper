@@ -30,7 +30,7 @@
 
             <TextBlock Text="Желаемые имена (рус.)" HorizontalAlignment="Center"/>
             <TextBox Grid.Row="1" x:Name="_tbRuWords" VerticalScrollBarVisibility="Auto"/>
-            <Button Content="Parse..." x:Name="_btnParse" Grid.Row="2" Click="OnParseClick"/>
+            <Button Content="Parse words..." x:Name="_btnParse" Grid.Row="2" Click="OnParseClick"/>
 
             <TextBlock Text="Буквы (Ru -> En)" Grid.Column="1" HorizontalAlignment="Center"/>
             <TextBox Grid.Row="1" Grid.Column="1" x:Name="_tbLetters" VerticalScrollBarVisibility="Auto"/>

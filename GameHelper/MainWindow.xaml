@@ -19,6 +19,7 @@
             </MenuItem>
             <MenuItem Header="Tools">
                 <MenuItem Header="Create name (En -> Ru)..." Click="OnCreateNameClick"/>
+                <MenuItem Header="Chat history..." Click="OnChatHistoryClick"/>
             </MenuItem>
             <MenuItem Header="Analyze" x:Name="_miAnalyze">
                 <MenuItem Header="Income events..." Click="OnAnalyzeIncomeClick"/>

@@ -244,6 +244,9 @@ namespace GameHelper.Windows
         private void Parse(string text)
         {
             var list = new List<string>();
+            list.AddRange(_tbRuWords.Text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
+
+            var oldCount = list.Count;
 
             foreach (var line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
             foreach (var w in line.Split(" ", StringSplitOptions.RemoveEmptyEntries))
@@ -255,6 +258,8 @@ namespace GameHelper.Windows
                 }
 
             _tbRuWords.Text = string.Join(Environment.NewLine, list.OrderBy(s => s));
+
+            MessageBox.Show($"Добавлено слов: {list.Count - oldCount}");
         }
 
         private void OnSortByNameClick(object sender, RoutedEventArgs e)

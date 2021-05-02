@@ -13,6 +13,9 @@
         <Style TargetType="TextBox" x:Key="DefaultTextBox">
             <Setter Property="Margin" Value="5"/>
         </Style>
+        <Style TargetType="ComboBox" x:Key="DefaultComboBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
         <Style TargetType="Border" x:Key="Group">
             <Setter Property="Margin" Value="5"/>
             <Setter Property="BorderThickness" Value="1"/>
