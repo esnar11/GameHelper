@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using GameHelper.Interfaces.LowLevel;
 using PacketDotNet;
 using SharpPcap;
@@ -45,6 +44,11 @@ namespace GameHelper.Utils
             if (packet != null)
                 if (packet.SourcePort == Port || packet.DestinationPort == Port)
                     OnData?.Invoke(packet.PayloadData);
+        }
+
+        public override string ToString()
+        {
+            return "UDP port " + Port;
         }
     }
 }

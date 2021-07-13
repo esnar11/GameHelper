@@ -1,0 +1,32 @@
+﻿<Window x:Class="GameHelper.Windows.UdpTrafficAnalyzeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Analyze" Height="480" Width="640"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource DefaultButton}"/>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}"/>
+        <Style TargetType="Border" BasedOn="{StaticResource Group}"/>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="_cbPorts" SelectionChanged="OnPortChanged"/>
+                <Button Content="Start capture" x:Name="_btnCaptureStart" Click="OnIncomeCaptureStartClick"/>
+                <Button Content="Stop capture" x:Name="_btnCaptureStop" Click="OnIncomeCaptureStopClick"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Records: "/>
+                    <TextBlock Text="-" x:Name="_tbIncomeCount"/>
+                </StackPanel>
+                <Button Content="Clear" x:Name="_btnCaptureClear" Click="OnCaptureClearClick"/>
+                <Button Content="Save..." x:Name="_btnSave" Click="OnSaveClick"/>
+                <Button Content="Load..." x:Name="_btnLoad" Click="OnLoadClick"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

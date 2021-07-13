@@ -231,5 +231,10 @@ namespace GameHelper
         {
             new ChatHistoryWindow(new IChatHistoryReadonly[0]).Show();
         }
+
+        private void OnUdpTrafficAnalyze(object sender, RoutedEventArgs e)
+        {
+            new UdpTrafficAnalyzeWindow(_appContext.GameSource.UDPs).Show();
+        }
     }
 }

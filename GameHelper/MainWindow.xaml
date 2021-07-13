@@ -25,6 +25,7 @@
             <MenuItem Header="Analyze" x:Name="_miAnalyze">
                 <MenuItem Header="Income events..." Click="OnAnalyzeIncomeClick"/>
                 <MenuItem Header="Outcome events..." Click="OnAnalyzeOutcomeClick"/>
+                <MenuItem Header="UDP traffic analyze..." Click="OnUdpTrafficAnalyze"/>
             </MenuItem>
         </Menu>
     </Grid>
