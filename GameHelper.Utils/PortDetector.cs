@@ -49,7 +49,7 @@ namespace GameHelper.Utils
                     }
                 }
 
-            return result;
+            return result.OrderBy(p => p).ToArray();
         }
     }
 }

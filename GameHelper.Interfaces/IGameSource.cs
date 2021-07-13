@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using GameHelper.Interfaces.LowLevel;
 
 namespace GameHelper.Interfaces
 {
@@ -8,7 +10,7 @@ namespace GameHelper.Interfaces
 
         public Character Avatar { get; }
 
-        void Connect();
+        void Connect(string deviceName);
 
         void Disconnect();
 
@@ -23,5 +25,7 @@ namespace GameHelper.Interfaces
         IEventsSource EventsSource { get; }
 
         IRepository<BuffInfo> BuffRepository { get; }
+
+        IReadOnlyCollection<IUDP> UDPs { get; }
     }
 }

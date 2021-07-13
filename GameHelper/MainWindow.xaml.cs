@@ -8,6 +8,7 @@ using System.Windows.Input;
 using GameHelper.Interfaces;
 using GameHelper.UserControls;
 using GameHelper.Windows;
+using SharpPcap;
 using AppContext = GameHelper.Engine.AppContext;
 
 namespace GameHelper
@@ -17,9 +18,29 @@ namespace GameHelper
         private readonly ICollection<GameWindow> _windows = new List<GameWindow>();
         private readonly AppContext _appContext = new AppContext();
 
+        private ICaptureDevice SelectedDevice
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Settings.Default.SelectedDevice))
+                    return null;
+
+                return CaptureDeviceList.Instance.FirstOrDefault(d => d.Name == Settings.Default.SelectedDevice);
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            foreach (var device in CaptureDeviceList.Instance)
+            {
+                var deviceMenuItem = new MenuItem { Header = device.Description, Tag = device };
+                if (SelectedDevice != null)
+                    deviceMenuItem.IsChecked = device.Name == SelectedDevice.Name;
+                deviceMenuItem.Click += DeviceMenuItem_Click;
+                _miDevices.Items.Add(deviceMenuItem);
+            }
 
             var sources = new IGameSource[]
             {
@@ -35,6 +56,19 @@ namespace GameHelper
             TuneControls();
         }
 
+        private void DeviceMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = (MenuItem) sender;
+            var device = (ICaptureDevice) mi.Tag;
+
+            foreach (MenuItem devicesItem in _miDevices.Items)
+                devicesItem.IsChecked = false;
+
+            mi.IsChecked = true;
+            Settings.Default.SelectedDevice = device.Name;
+            Settings.Default.Save();
+        }
+
         private void OnConnect(object sender, RoutedEventArgs e)
         {
             foreach (var menuItem in _miGame.Items.OfType<MenuItem>())
@@ -46,7 +80,7 @@ namespace GameHelper
                 Cursor = Cursors.Wait;
 
                 _appContext.GameSource  = (IGameSource) ((MenuItem) sender).DataContext;
-                _appContext.GameSource.Connect();
+                _appContext.GameSource.Connect(SelectedDevice.Name);
                 TuneControls();
             }
             catch (Exception exception)

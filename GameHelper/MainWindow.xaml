@@ -10,6 +10,7 @@
             <MenuItem Header="Connect" x:Name="_miGame">
                 <Separator/>
                 <MenuItem Header="Disconnect" x:Name="_miDiconnect" Click="OnDisconnectClick"/>
+                <MenuItem Header="Devices" x:Name="_miDevices"/>
             </MenuItem>
             <MenuItem Header="Windows">
                 <MenuItem Header="Chat..." Click="OnChatClick"/>
