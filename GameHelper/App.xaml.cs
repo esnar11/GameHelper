@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Windows;
 using GameHelper.Interfaces;
-using GameHelper.Translators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,7 +11,7 @@ namespace GameHelper
     {
         public static ITranslateService TranslateService { get; private set; }
 
-        public static IChangeKeyboardLayoutService ChangeKeyboardLayoutService { get; } = new ChangeKeyboardLayoutService();
+        public static IChangeKeyboardLayoutService ChangeKeyboardLayoutService { get; } // TODO
 
         public static void ShowError(Exception error)
         {
@@ -29,14 +28,14 @@ namespace GameHelper
             var host = hostBuilder.Build();
             host.Services.GetService<IHttpClientFactory>();
 
-            TranslateService = new TranslateService();
+            TranslateService = null; // TODO
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddHttpClient<DeeplTranslateService>()
-                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseDefaultCredentials = true });
+            //services
+            //    .AddHttpClient<DeeplTranslateService>()
+            //    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseDefaultCredentials = true });
         }
     }
 }

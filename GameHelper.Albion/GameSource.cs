@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Albion.Network;
 using GameHelper.Interfaces;
+using GameHelper.Utils;
 using PacketDotNet;
 using SharpPcap;
 
@@ -21,6 +22,13 @@ namespace GameHelper.Albion
         public string Name => "Albion";
         
         public Character Avatar { get; } = new Character();
+
+        public GameSource()
+        {
+            var detector = new PortDetector();
+            var ports = detector.GetUdpPorts("Albion-Online");
+            ports.Equals(null);
+        }
 
         public void Connect()
         {

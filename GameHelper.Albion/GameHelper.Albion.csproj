@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameHelper.Interfaces\GameHelper.Interfaces.csproj" />
+    <ProjectReference Include="..\GameHelper.Utils\GameHelper.Utils.csproj" />
   </ItemGroup>
 
 </Project>

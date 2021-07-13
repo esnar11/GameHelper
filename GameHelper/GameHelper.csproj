@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameHelper.Albion\GameHelper.Albion.csproj" />
-    <ProjectReference Include="..\GameHelper.Translators\GameHelper.Translators.csproj" />
   </ItemGroup>
 
   <ItemGroup>
