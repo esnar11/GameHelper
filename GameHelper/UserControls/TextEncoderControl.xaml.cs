@@ -22,6 +22,12 @@ namespace GameHelper.UserControls
                             .OrderBy(e => e.Name)
                             .Select(e => new { Value = e.GetEncoding().GetString(_binaryData), Encoding = e.Name })
                         : null;
+
+                //if (_binaryData != null)
+                //{
+                //    var s = string.Join(", ", _binaryData);
+                //    s.Equals(null);
+                //}
             }
         }
 

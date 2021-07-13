@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using GameHelper.Interfaces.LowLevel;
@@ -25,8 +26,9 @@ namespace GameHelper.Windows
         private void _searchControl_ConditionsChanged(Type type, string text)
         {
             var searchResults = _binarySearcher.Search(_items, text);
-
-            throw new NotImplementedException();
+            _lb.ItemsSource = searchResults.Any()
+                ? searchResults.Select(r => r.Data)
+                : _items;
         }
 
         public ParseBinaryWindow(IReadOnlyCollection<byte[]> items): this()
