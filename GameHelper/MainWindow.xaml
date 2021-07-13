@@ -22,10 +22,9 @@
                 <MenuItem Header="Create name (En -> Ru)..." Click="OnCreateNameClick"/>
                 <MenuItem Header="Chat history..." Click="OnChatHistoryClick"/>
             </MenuItem>
-            <MenuItem Header="Analyze" x:Name="_miAnalyze">
-                <MenuItem Header="Income events..." Click="OnAnalyzeIncomeClick"/>
-                <MenuItem Header="Outcome events..." Click="OnAnalyzeOutcomeClick"/>
-                <MenuItem Header="UDP traffic analyze..." Click="OnUdpTrafficAnalyze"/>
+            <MenuItem Header="Analyze">
+                <MenuItem x:Name="_miCaptureUDP" Header="Capture UDP traffic..." Click="OnCaptureUdp"/>
+                <MenuItem x:Name="_miParseBinary" Header="Parse binary traffic..." Click="OnParseBinary"/>
             </MenuItem>
         </Menu>
     </Grid>

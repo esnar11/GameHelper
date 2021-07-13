@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using GameHelper.Interfaces;
-using Translation;
 
 namespace GameHelper.Translators
 {
+/*
     public class TranslateService: ITranslateService
     {
         private readonly TranslationEngine _translationEngine;
@@ -42,4 +42,5 @@ namespace GameHelper.Translators
         {
         }
     }
+*/
 }

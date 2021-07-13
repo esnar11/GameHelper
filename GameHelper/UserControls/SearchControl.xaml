@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="GameHelper.UserControls.SearchControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="_cb"/>
+        <TextBox x:Name="_tb" Grid.Column="1" KeyDown="_tb_OnKeyDown"/>
+    </Grid>
+</UserControl>

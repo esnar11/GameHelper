@@ -1,0 +1,32 @@
+﻿<Window x:Class="GameHelper.Windows.ParseBinaryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:windows="clr-namespace:GameHelper.Windows"
+        xmlns:userControls="clr-namespace:GameHelper.UserControls"
+        Title="Parse binary" Height="480" Width="640">
+    <Window.Resources>
+        <windows:BinaryDataConverter x:Key="_binaryDataConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <userControls:SearchControl x:Name="_searchControl" Grid.ColumnSpan="2" Margin="5"/>
+
+        <ListBox x:Name="_lb" SelectionChanged="OnSelectionChanged" Grid.Row="1" Margin="5">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource _binaryDataConverter}}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <userControls:TextEncoderControl x:Name="_te" Grid.Column="1" Grid.Row="1" Margin="5"/>
+    </Grid>
+</Window>

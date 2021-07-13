@@ -12,20 +12,21 @@ using Microsoft.Win32;
 
 namespace GameHelper.Windows
 {
-    public partial class UdpTrafficAnalyzeWindow
+    public partial class UdpCaptureWindow
     {
-        private readonly IUdpDataStorage _eventsStorage = new UdpDataStorage();
+        protected internal const string DefaultUdpFileExt = "udp";
+        private readonly IUdpDataStorage _dataStorage = new UdpDataStorage();
         private bool _capturing;
         private readonly Timer _timer = new Timer(TimeSpan.FromSeconds(1).TotalMilliseconds) { AutoReset = true };
 
         private IUDP SelectedUDP => _cbPorts.SelectedItem as IUDP;
 
-        public UdpTrafficAnalyzeWindow()
+        public UdpCaptureWindow()
         {
             InitializeComponent();
         }
 
-        public UdpTrafficAnalyzeWindow(IReadOnlyCollection<IUDP> udps) : this()
+        public UdpCaptureWindow(IReadOnlyCollection<IUDP> udps) : this()
         {
             _cbPorts.ItemsSource = udps.OrderBy(u => u.Port);
 
@@ -49,7 +50,7 @@ namespace GameHelper.Windows
         {
             this.Do(() =>
             {
-                _tbIncomeCount.Text = _eventsStorage.Count.ToString();
+                _tbIncomeCount.Text = _dataStorage.Count.ToString();
             });
         }
 
@@ -60,6 +61,7 @@ namespace GameHelper.Windows
             _btnCaptureStop.IsEnabled = _capturing;
             _btnSave.IsEnabled = !_capturing;
             _btnLoad.IsEnabled = !_capturing;
+            _btnParse.IsEnabled = _dataStorage.Items.Any();
         }
 
         private void OnIncomeCaptureStartClick(object sender, RoutedEventArgs e)
@@ -78,7 +80,7 @@ namespace GameHelper.Windows
 
         private void OnNewData(byte[] data)
         {
-            _eventsStorage.Add(data);
+            _dataStorage.Add(data);
         }
 
         private void OnCaptureClearClick(object sender, RoutedEventArgs e)
@@ -86,34 +88,40 @@ namespace GameHelper.Windows
             if (MessageBox.Show("Clear?", "Clear?", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return;
 
-            _eventsStorage.Clear();
+            _dataStorage.Clear();
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new SaveFileDialog { DefaultExt = "udp" };
+            var fileDialog = new SaveFileDialog { DefaultExt = DefaultUdpFileExt };
             if (fileDialog.ShowDialog(this) == true)
             {
                 using (var file = new FileStream(fileDialog.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                    _eventsStorage.Save(file);
+                    _dataStorage.Save(file);
                 MessageBox.Show(this, "Data saved.", string.Empty, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void OnLoadClick(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new OpenFileDialog { DefaultExt = "udp" };
+            var fileDialog = new OpenFileDialog { DefaultExt = DefaultUdpFileExt };
             if (fileDialog.ShowDialog(this) == true)
             {
                 using (var file = new FileStream(fileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    _eventsStorage.Load(file);
+                    _dataStorage.Load(file);
                 TuneControls();
             }
         }
 
         private void OnPortChanged(object sender, SelectionChangedEventArgs e)
         {
+            _dataStorage.Clear();
             TuneControls();
+        }
+
+        private void OnParseClick(object sender, RoutedEventArgs e)
+        {
+            new ParseBinaryWindow(_dataStorage.Items) { Owner = this }.ShowDialog();
         }
     }
 }

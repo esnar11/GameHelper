@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GameHelper.Interfaces.LowLevel;
 
 namespace GameHelper.Engine.Impl
@@ -20,6 +21,15 @@ namespace GameHelper.Engine.Impl
             {
                 lock (_data)
                     return (uint)_data.Count;
+            }
+        }
+
+        public IReadOnlyCollection<byte[]> Items
+        {
+            get
+            {
+                lock (_data)
+                    return _data.ToArray();
             }
         }
 

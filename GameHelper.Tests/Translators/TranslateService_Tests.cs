@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using GameHelper.Translators;
 using Moq;
 using NUnit.Framework;
 
@@ -18,9 +18,7 @@ namespace GameHelper.Tests.Translators
                 .Setup(cf => cf.CreateClient(It.IsAny<string>()))
                 .Returns(new HttpClient());
 
-            var translateService = new TranslateService();
-            var result = await translateService.Translate("Test");
-            Assert.IsNotEmpty(result);
+            throw new NotSupportedException();
         }
     }
 }

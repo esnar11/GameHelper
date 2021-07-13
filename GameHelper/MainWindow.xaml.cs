@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GameHelper.Engine.Impl;
 using GameHelper.Interfaces;
 using GameHelper.UserControls;
 using GameHelper.Windows;
+using Microsoft.Win32;
 using SharpPcap;
 using AppContext = GameHelper.Engine.AppContext;
 
@@ -130,7 +133,7 @@ namespace GameHelper
         private void TuneControls()
         {
             _miDiconnect.IsEnabled = _appContext.GameSource != null;
-            _miAnalyze.IsEnabled = _appContext.GameSource != null;
+            _miCaptureUDP.IsEnabled = _appContext.GameSource != null && _appContext.GameSource.UDPs.Any();
         }
 
         private void OnAnalyzeIncomeClick(object sender, RoutedEventArgs e)
@@ -232,9 +235,21 @@ namespace GameHelper
             new ChatHistoryWindow(new IChatHistoryReadonly[0]).Show();
         }
 
-        private void OnUdpTrafficAnalyze(object sender, RoutedEventArgs e)
+        private void OnCaptureUdp(object sender, RoutedEventArgs e)
         {
-            new UdpTrafficAnalyzeWindow(_appContext.GameSource.UDPs).Show();
+            new UdpCaptureWindow(_appContext.GameSource.UDPs) { Owner = this }.Show();
+        }
+
+        private void OnParseBinary(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new OpenFileDialog { DefaultExt = UdpCaptureWindow.DefaultUdpFileExt };
+            if (fileDialog.ShowDialog(this) == true)
+            {
+                var dataStorage = new UdpDataStorage();
+                using (var file = new FileStream(fileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    dataStorage.Load(file);
+                new ParseBinaryWindow(dataStorage.Items) { Owner = this }.Show();
+            }
         }
     }
 }

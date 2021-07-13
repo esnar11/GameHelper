@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace GameHelper.Interfaces.LowLevel
 {
@@ -7,6 +8,8 @@ namespace GameHelper.Interfaces.LowLevel
         void Add(byte[] data);
 
         uint Count { get; }
+
+        IReadOnlyCollection<byte[]> Items { get; }
 
         void Clear();
         
