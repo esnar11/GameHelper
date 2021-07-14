@@ -20,15 +20,26 @@ namespace GameHelper.Windows
         {
             InitializeComponent();
 
-            _searchControl.ConditionsChanged += _searchControl_ConditionsChanged;
+            _searchControl.ConditionsChanged += SearchConditionsChanged;
         }
 
-        private void _searchControl_ConditionsChanged(Type type, string text)
+        private void SearchConditionsChanged(Type type, string text)
         {
-            var searchResults = _binarySearcher.Search(_items, text);
+            IReadOnlyCollection<BinarySearchMatch> searchResults = null;
+            if (!string.IsNullOrEmpty(text))
+            {
+                if (type == typeof(string))
+                    searchResults = _binarySearcher.Search(_items, text);
+                else if (type == typeof(byte))
+                    searchResults = _binarySearcher.Search(_items, byte.Parse(text));
+                else
+                    throw new NotImplementedException();
+            }
+
             _lb.ItemsSource = searchResults.Any()
                 ? searchResults.Select(r => r.Data)
                 : _items;
+            _dg.SearchMatches = searchResults.Any() ? searchResults : null;
         }
 
         public ParseBinaryWindow(IReadOnlyCollection<byte[]> items): this()
@@ -39,6 +50,7 @@ namespace GameHelper.Windows
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _dg.Data = SelectedData;
             _te.BinaryData = SelectedData;
         }
     }

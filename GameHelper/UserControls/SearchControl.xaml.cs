@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GameHelper.UserControls
@@ -56,6 +57,11 @@ namespace GameHelper.UserControls
                 return int.TryParse(text, out _);
 
             throw new NotImplementedException();
+        }
+
+        private void OnClearClick(object sender, RoutedEventArgs e)
+        {
+            ConditionsChanged?.Invoke(SelectedType, null);
         }
     }
 }

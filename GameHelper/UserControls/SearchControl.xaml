@@ -5,8 +5,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ComboBox x:Name="_cb"/>
         <TextBox x:Name="_tb" Grid.Column="1" KeyDown="_tb_OnKeyDown"/>
+        <Button Content="X" Click="OnClearClick" Grid.Column="2"/>
     </Grid>
 </UserControl>

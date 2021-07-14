@@ -50,15 +50,18 @@ namespace GameHelper.Utils
                 var s = encodingInfo.GetEncoding().GetString(data);
                 if (string.IsNullOrEmpty(s))
                     continue;
-                
-                var i = s.IndexOf(value);
-                if (i < 0)
-                    continue;
 
-                if (result.Any(m => m.Position == i && m.Length == value.Length))
-                    continue;
+                for (var index = 0; ; index += value.Length)
+                {
+                    index = s.IndexOf(value, index);
+                    if (index == -1)
+                        break;
 
-                result.Add(new BinarySearchMatch(data, i, value.Length));
+                    if (result.Any(m => m.Position == index && m.Length == value.Length))
+                        continue;
+
+                    result.Add(new BinarySearchMatch(data, index, value.Length));
+                }
             }
             return result;
         }

@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="GameHelper.UserControls.DatagramControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:userControls="clr-namespace:GameHelper.UserControls">
+    <UserControl.Resources>
+        <userControls:DatagramConverter x:Key="_datagramConverter"/>
+    </UserControl.Resources>
+    
+    <ItemsControl x:Name="_ic">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Border Margin="2" BorderThickness="1" BorderBrush="#80808080" ToolTip="{Binding Position}" Background="{Binding Converter={StaticResource _datagramConverter}}">
+                    <TextBlock Text="{Binding Value}" HorizontalAlignment="Center" ToolTip="{Binding Position}" Margin="2"/>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+</UserControl>

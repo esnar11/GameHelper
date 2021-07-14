@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using GameHelper.Utils;
 using NUnit.Framework;
 
@@ -24,7 +25,15 @@ namespace GameHelper.Tests.Utils
         [Test]
         public void SearchString_Test()
         {
-            var results = BinarySearcher.Search(new byte[0], "Test");
+            var data = Encoding.UTF8.GetBytes("В лесу родилась ёлочка, в лесу она росла");
+            var results = BinarySearcher.Search(data, "лесу");
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual(2, results.First().Position);
+            Assert.AreEqual(4, results.First().Length);
+            Assert.AreEqual(26, results.Skip(1).First().Position);
+            Assert.AreEqual(4, results.Skip(1).First().Length);
+
+            results = BinarySearcher.Search(new byte[0], "Test");
             Assert.AreEqual(0, results.Count);
             
             results = BinarySearcher.Search(Data1, "LFG");
