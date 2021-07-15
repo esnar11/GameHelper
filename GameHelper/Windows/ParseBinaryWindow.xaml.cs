@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using GameHelper.Interfaces.LowLevel;
@@ -32,14 +33,19 @@ namespace GameHelper.Windows
                     searchResults = _binarySearcher.Search(_items, text);
                 else if (type == typeof(byte))
                     searchResults = _binarySearcher.Search(_items, byte.Parse(text));
+                else if (type == typeof(ushort))
+                    searchResults = _binarySearcher.Search(_items, ushort.Parse(text));
                 else
                     throw new NotImplementedException();
+
+                if (!searchResults.Any())
+                    MessageBox.Show(this, "Not found", "", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
-            _lb.ItemsSource = searchResults.Any()
+            _lb.ItemsSource = searchResults != null && searchResults.Any()
                 ? searchResults.Select(r => r.Data)
                 : _items;
-            _dg.SearchMatches = searchResults.Any() ? searchResults : null;
+            _dg.SearchMatches = searchResults != null && searchResults.Any() ? searchResults : null;
         }
 
         public ParseBinaryWindow(IReadOnlyCollection<byte[]> items): this()

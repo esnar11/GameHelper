@@ -33,6 +33,10 @@ namespace GameHelper.Utils
                 if (value is byte b)
                     return SearchByte(data, b);
 
+            if (typeof(T) == typeof(ushort))
+                if (value is ushort us)
+                    return SearchUShort(data, us);
+
             throw new NotImplementedException();
         }
 
@@ -75,6 +79,24 @@ namespace GameHelper.Utils
             for (var i = 0; i < data.Length; i++)
                 if (data[i] == value)
                     result.Add(new BinarySearchMatch(data, i, 1));
+            return result;
+        }
+
+        private static IReadOnlyCollection<BinarySearchMatch> SearchUShort(byte[] data, ushort value)
+        {
+            if (data.Length == 0)
+                return NoMatches;
+
+            var result = new List<BinarySearchMatch>();
+            for (var i = 0; i < data.Length -1; i++)
+            {
+                var b1 = data[i];
+                var b2 = data[i + 1];
+                var u = (ushort)(b1 * 256 + b2);
+                if (u == value)
+                    result.Add(new BinarySearchMatch(data, i, 2));
+            }
+
             return result;
         }
     }
