@@ -12,14 +12,19 @@ namespace GameHelper.Windows
 {
     public partial class ParseBinaryWindow
     {
-        private readonly IReadOnlyCollection<byte[]> _items;
+        private readonly IReadOnlyCollection<Datagram> _items;
         private readonly IBinarySearcher _binarySearcher = new BinarySearcher();
 
-        public byte[] SelectedData => (byte[])_lb.SelectedItem;
+        public Datagram SelectedData => (Datagram)_lb.SelectedItem;
+
+        public DataDirection SelectedDirection => (DataDirection)_cbDirection.SelectedItem;
 
         public ParseBinaryWindow()
         {
             InitializeComponent();
+
+            _cbDirection.ItemsSource = new[] { DataDirection.ClientToServer, DataDirection.ServerToClient };
+            _cbDirection.SelectedItem = DataDirection.ServerToClient;
 
             _searchControl.ConditionsChanged += SearchConditionsChanged;
         }
@@ -44,20 +49,31 @@ namespace GameHelper.Windows
 
             _lb.ItemsSource = searchResults != null && searchResults.Any()
                 ? searchResults.Select(r => r.Data)
-                : _items;
+                : _items.Where(d => d.Direction == SelectedDirection);
             _dg.SearchMatches = searchResults != null && searchResults.Any() ? searchResults : null;
         }
 
-        public ParseBinaryWindow(IReadOnlyCollection<byte[]> items): this()
+        public ParseBinaryWindow(IReadOnlyCollection<Datagram> items): this()
         {
             _items = items ?? throw new ArgumentNullException(nameof(items));
-            _lb.ItemsSource = items;
+            _lb.ItemsSource = items.Where(d => d.Direction == SelectedDirection);
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _dg.Data = SelectedData;
-            _te.BinaryData = SelectedData;
+            _te.Datagram = SelectedData;
+        }
+
+        private void OnDirectionSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_items == null)
+                return;
+
+            if (_searchControl.Conditions == null)
+                _lb.ItemsSource = _items.Where(d => d.Direction == SelectedDirection);
+            else
+                SearchConditionsChanged(_searchControl.Conditions.Item1, _searchControl.Conditions.Item2);
         }
     }
 
@@ -65,9 +81,9 @@ namespace GameHelper.Windows
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var data = (byte[])value;
-            if (targetType == typeof(string))
-                return data.Length.ToString();
+            if (value is Datagram datagram)
+                if (targetType == typeof(string))
+                    return $"{datagram.Direction} {datagram.Data.Length}";
 
             throw new NotImplementedException();
         }

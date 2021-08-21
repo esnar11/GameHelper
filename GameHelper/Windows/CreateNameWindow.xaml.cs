@@ -220,16 +220,23 @@ namespace GameHelper.Windows
 
         private void OnParseClick(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new OpenFileDialog();
+            var fileDialog = new OpenFileDialog { Multiselect = true };
             if (fileDialog.ShowDialog() == true)
                 try
                 {
                     Cursor = Cursors.Wait;
-                    
-                    using var file = new FileStream(fileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    using var reader = new StreamReader(file);
-                    var text = reader.ReadToEnd();
-                    Parse(text);
+
+                    var count = 0;
+
+                    foreach (var fileName in fileDialog.FileNames)
+                    {
+                        using var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        using var reader = new StreamReader(file);
+                        var text = reader.ReadToEnd();
+                        count += Parse(text);
+                    }
+
+                    MessageBox.Show($"Добавлено слов: {count}");
                 }
                 catch (Exception exc)
                 {
@@ -241,7 +248,7 @@ namespace GameHelper.Windows
                 }
         }
 
-        private void Parse(string text)
+        private int Parse(string text)
         {
             var list = new List<string>();
             list.AddRange(_tbRuWords.Text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
@@ -259,7 +266,7 @@ namespace GameHelper.Windows
 
             _tbRuWords.Text = string.Join(Environment.NewLine, list.OrderBy(s => s));
 
-            MessageBox.Show($"Добавлено слов: {list.Count - oldCount}");
+            return list.Count - oldCount;
         }
 
         private void OnSortByNameClick(object sender, RoutedEventArgs e)

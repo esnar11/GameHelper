@@ -7,12 +7,12 @@ namespace GameHelper.Engine.Impl
 {
     public class UdpDataStorage: IUdpDataStorage
     {
-        private readonly ICollection<byte[]> _data = new List<byte[]>();
+        private readonly ICollection<Datagram> _data = new List<Datagram>();
 
-        public void Add(byte[] data)
+        public void Add(Datagram datagram)
         {
             lock (_data)
-                _data.Add(data);
+                _data.Add(datagram);
         }
 
         public uint Count
@@ -24,7 +24,7 @@ namespace GameHelper.Engine.Impl
             }
         }
 
-        public IReadOnlyCollection<byte[]> Items
+        public IReadOnlyCollection<Datagram> Items
         {
             get
             {
@@ -45,8 +45,9 @@ namespace GameHelper.Engine.Impl
             lock (_data)
                 foreach (var data in _data)
                 {
-                    writer.Write(data.Length);
-                    writer.Write(data);
+                    writer.Write((byte)data.Direction);
+                    writer.Write(data.Data.Length);
+                    writer.Write(data.Data);
                 }
         }
 
@@ -58,9 +59,10 @@ namespace GameHelper.Engine.Impl
                 using var reader = new BinaryReader(stream);
                 while (stream.Position < stream.Length - 1)
                 {
+                    var direction = (DataDirection)reader.ReadByte();
                     var count = reader.ReadInt32();
                     var data = reader.ReadBytes(count);
-                    _data.Add(data);
+                    _data.Add(new Datagram(data, direction));
                 }
             }
         }

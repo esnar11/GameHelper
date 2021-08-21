@@ -10,10 +10,10 @@ namespace GameHelper.UserControls
 {
     public partial class DatagramControl
     {
-        private byte[] _data;
+        private Datagram _data;
         private IReadOnlyCollection<BinarySearchMatch> _searchMatches;
 
-        public byte[] Data
+        public Datagram Data
         {
             get => _data;
             set
@@ -30,10 +30,10 @@ namespace GameHelper.UserControls
                 }
 
                 var list = new List<ByteModel>();
-                for (var i = 0; i < _data.Length; i++)
+                for (var i = 0; i < _data.Data.Length; i++)
                 {
                     var isHighlighted = SearchMatches != null && SearchMatches.Any(sm => sm.Data == _data && i >= sm.Position && i < sm.Position + sm.Length);
-                    list.Add(new ByteModel(_data[i].ToString(), i, isHighlighted));
+                    list.Add(new ByteModel(_data.Data[i].ToString(), i, isHighlighted));
                 }
 
                 _ic.ItemsSource = list;

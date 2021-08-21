@@ -13,7 +13,7 @@ namespace GameHelper.Utils
     {
         private static readonly BinarySearchMatch[] NoMatches = new BinarySearchMatch[0];
 
-        public IReadOnlyCollection<BinarySearchMatch> Search<T>(IReadOnlyCollection<byte[]> items, T value)
+        public IReadOnlyCollection<BinarySearchMatch> Search<T>(IReadOnlyCollection<Datagram> items, T value)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
 
@@ -23,7 +23,7 @@ namespace GameHelper.Utils
             return result;
         }
 
-        internal static IReadOnlyCollection<BinarySearchMatch> Search<T>(byte[] data, T value)
+        internal static IReadOnlyCollection<BinarySearchMatch> Search<T>(Datagram data, T value)
         {
             if (typeof(T) == typeof(string))
                 if (value is string s)
@@ -40,18 +40,18 @@ namespace GameHelper.Utils
             throw new NotImplementedException();
         }
 
-        private static IReadOnlyCollection<BinarySearchMatch> SearchString(byte[] data, string value)
+        private static IReadOnlyCollection<BinarySearchMatch> SearchString(Datagram data, string value)
         {
             if (string.IsNullOrEmpty(value))
                 return NoMatches;
 
-            if (data.Length < value.Length)
+            if (data.Data.Length < value.Length)
                 return NoMatches;
 
             var result = new List<BinarySearchMatch>();
             foreach (var encodingInfo in Encoding.GetEncodings())
             {
-                var s = encodingInfo.GetEncoding().GetString(data);
+                var s = encodingInfo.GetEncoding().GetString(data.Data);
                 if (string.IsNullOrEmpty(s))
                     continue;
 
@@ -70,28 +70,28 @@ namespace GameHelper.Utils
             return result;
         }
 
-        private static IReadOnlyCollection<BinarySearchMatch> SearchByte(byte[] data, byte value)
+        private static IReadOnlyCollection<BinarySearchMatch> SearchByte(Datagram data, byte value)
         {
-            if (data.Length == 0)
+            if (data.Data.Length == 0)
                 return NoMatches;
 
             var result = new List<BinarySearchMatch>();
-            for (var i = 0; i < data.Length; i++)
-                if (data[i] == value)
+            for (var i = 0; i < data.Data.Length; i++)
+                if (data.Data[i] == value)
                     result.Add(new BinarySearchMatch(data, i, 1));
             return result;
         }
 
-        private static IReadOnlyCollection<BinarySearchMatch> SearchUShort(byte[] data, ushort value)
+        private static IReadOnlyCollection<BinarySearchMatch> SearchUShort(Datagram data, ushort value)
         {
-            if (data.Length == 0)
+            if (data.Data.Length == 0)
                 return NoMatches;
 
             var result = new List<BinarySearchMatch>();
-            for (var i = 0; i < data.Length -1; i++)
+            for (var i = 0; i < data.Data.Length -1; i++)
             {
-                var b1 = data[i];
-                var b2 = data[i + 1];
+                var b1 = data.Data[i];
+                var b2 = data.Data[i + 1];
                 var u = (ushort)(b1 * 256 + b2);
                 if (u == value)
                     result.Add(new BinarySearchMatch(data, i, 2));

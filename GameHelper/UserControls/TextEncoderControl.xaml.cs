@@ -1,33 +1,28 @@
 ﻿using System.Linq;
 using System.Text;
+using GameHelper.Interfaces.LowLevel;
 
 namespace GameHelper.UserControls
 {
     public partial class TextEncoderControl
     {
-        private byte[] _binaryData;
+        private Datagram _datagram;
 
-        public byte[] BinaryData
+        public Datagram Datagram
         {
-            get => _binaryData;
+            get => _datagram;
             set
             {
-                if (_binaryData == value)
+                if (_datagram == value)
                     return;
 
-                _binaryData = value;
+                _datagram = value;
 
-                _dg.ItemsSource = _binaryData != null
+                _dg.ItemsSource = _datagram != null
                         ? Encoding.GetEncodings()
                             .OrderBy(e => e.Name)
-                            .Select(e => new { Value = e.GetEncoding().GetString(_binaryData), Encoding = e.Name })
+                            .Select(e => new { Value = e.GetEncoding().GetString(_datagram.Data), Encoding = e.Name })
                         : null;
-
-                //if (_binaryData != null)
-                //{
-                //    var s = string.Join(", ", _binaryData);
-                //    s.Equals(null);
-                //}
             }
         }
 

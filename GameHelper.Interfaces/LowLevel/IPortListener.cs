@@ -2,11 +2,11 @@
 
 namespace GameHelper.Interfaces.LowLevel
 {
-    public interface IUDP
+    public interface IPortListener
     {
         ushort Port { get; }
 
-        event Action<byte[]> OnData;
+        event Action<Datagram> DataCaptured;
 
         void Connect();
         void Disconnect();

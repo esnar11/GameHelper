@@ -11,6 +11,8 @@ namespace GameHelper.Windows
     {
         private const char PartSeparator = '|';
         private const char ValueSeparator = ';';
+        private const double DSize = 0.025;
+
         private Point _startDragPoint;
         private Point _windowStartPoint;
         private Size _windowStartSize;
@@ -129,6 +131,31 @@ namespace GameHelper.Windows
 
             Settings.Default.WindowsPositions = string.Join(PartSeparator, parts);
             Settings.Default.Save();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.Handled)
+                return;
+
+            if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        Width -= Width * DSize;
+                        break;
+                    case Key.Right:
+                        Width += Width * DSize;
+                        break;
+                    case Key.Up:
+                        Height -= Height * DSize;
+                        break;
+                    case Key.Down:
+                        Height += Height * DSize;
+                        break;
+                }
         }
     }
 }

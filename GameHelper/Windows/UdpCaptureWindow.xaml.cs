@@ -19,16 +19,17 @@ namespace GameHelper.Windows
         private bool _capturing;
         private readonly Timer _timer = new Timer(TimeSpan.FromSeconds(1).TotalMilliseconds) { AutoReset = true };
 
-        private IUDP SelectedUDP => _cbPorts.SelectedItem as IUDP;
+        private IPortListener SelectedPortListener => _cbPorts.SelectedItem as IPortListener;
 
         public UdpCaptureWindow()
         {
             InitializeComponent();
         }
 
-        public UdpCaptureWindow(IReadOnlyCollection<IUDP> udps) : this()
+        public UdpCaptureWindow(IReadOnlyCollection<IPortListener> udps) : this()
         {
             _cbPorts.ItemsSource = udps.OrderBy(u => u.Port);
+            _cbPorts.SelectedItem = udps.OrderBy(u => u.Port).FirstOrDefault();
 
             TuneControls();
 
@@ -41,7 +42,7 @@ namespace GameHelper.Windows
             _timer.Stop();
 
             if (_capturing)
-                SelectedUDP.OnData -= OnNewData;
+                SelectedPortListener.DataCaptured -= OnNewData;
 
             base.OnClosing(e);
         }
@@ -57,30 +58,30 @@ namespace GameHelper.Windows
         private void TuneControls()
         {
             _cbPorts.IsEnabled = !_capturing;
-            _btnCaptureStart.IsEnabled = SelectedUDP != null && !_capturing;
+            _btnCaptureStart.IsEnabled = SelectedPortListener != null && !_capturing;
             _btnCaptureStop.IsEnabled = _capturing;
-            _btnSave.IsEnabled = !_capturing;
-            _btnLoad.IsEnabled = !_capturing;
+            _btnSave.IsEnabled = !_capturing && _dataStorage.Items.Any();
+            _btnCaptureClear.IsEnabled = !_capturing && _dataStorage.Items.Any();
             _btnParse.IsEnabled = _dataStorage.Items.Any();
         }
 
         private void OnIncomeCaptureStartClick(object sender, RoutedEventArgs e)
         {
             _capturing = true;
-            SelectedUDP.OnData += OnNewData;
+            SelectedPortListener.DataCaptured += OnNewData;
             TuneControls();
         }
 
         private void OnIncomeCaptureStopClick(object sender, RoutedEventArgs e)
         {
-            SelectedUDP.OnData -= OnNewData;
+            SelectedPortListener.DataCaptured -= OnNewData;
             _capturing = false;
             TuneControls();
         }
 
-        private void OnNewData(byte[] data)
+        private void OnNewData(Datagram datagram)
         {
-            _dataStorage.Add(data);
+            _dataStorage.Add(datagram);
         }
 
         private void OnCaptureClearClick(object sender, RoutedEventArgs e)
@@ -99,17 +100,6 @@ namespace GameHelper.Windows
                 using (var file = new FileStream(fileDialog.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
                     _dataStorage.Save(file);
                 MessageBox.Show(this, "Data saved.", string.Empty, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        private void OnLoadClick(object sender, RoutedEventArgs e)
-        {
-            var fileDialog = new OpenFileDialog { DefaultExt = DefaultUdpFileExt };
-            if (fileDialog.ShowDialog(this) == true)
-            {
-                using (var file = new FileStream(fileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    _dataStorage.Load(file);
-                TuneControls();
             }
         }
 

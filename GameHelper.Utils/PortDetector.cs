@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GameHelper.Interfaces.LowLevel;
 
 namespace GameHelper.Utils
 {
@@ -11,34 +12,52 @@ namespace GameHelper.Utils
         {
             if (string.IsNullOrEmpty(processName)) throw new ArgumentNullException(nameof(processName));
 
+            return new ushort[] { 27000 };
+
             var processes = Process.GetProcessesByName(processName);
-            return GetPortsAndProcesses(processes.Single().Id);
+            return GetPorts(processes.Single().Id, "UDP");
         }
 
-        public IReadOnlyCollection<ushort> GetPortsAndProcesses(int processId)
+        public IReadOnlyCollection<ushort> GetTcpPorts(string processName)
+        {
+            if (string.IsNullOrEmpty(processName)) throw new ArgumentNullException(nameof(processName));
+
+            return new ushort[] { 57270, 57271, 55006 };
+
+            //var processes = Process.GetProcessesByName(processName);
+            //return GetPorts(processes.Single().Id, "TCP");
+        }
+
+        public IReadOnlyCollection<Channel> GetChannels(string processName)
+        {
+            if (processName.Equals("NW"))
+                return new[] { new Channel(27000, ChannelProtocol.UDP) };
+
+            throw new NotImplementedException();
+        }
+
+        private protected IReadOnlyCollection<ushort> GetPorts(int processId, string protocol)
         {
             using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "netstat.exe",
-                    Arguments = "-a -o -p UDP",
+                    Arguments = "-a -o -p " + protocol,
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true
                 }
             };
-
             process.Start();
-
             var content = process.StandardOutput.ReadToEnd();
 
             var result = new List<ushort>();
 
             var rows = content.Split(Environment.NewLine);
             foreach (var row in rows)
-                if (row.Contains("UDP"))
+                if (row.Contains(protocol))
                 {
                     var parts = row.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                     var pId = int.Parse(parts[^1]);

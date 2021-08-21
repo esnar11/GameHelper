@@ -5,11 +5,11 @@ namespace GameHelper.Interfaces.LowLevel
 {
     public interface IUdpDataStorage
     {
-        void Add(byte[] data);
+        void Add(Datagram datagram);
 
         uint Count { get; }
 
-        IReadOnlyCollection<byte[]> Items { get; }
+        IReadOnlyCollection<Datagram> Items { get; }
 
         void Clear();
         

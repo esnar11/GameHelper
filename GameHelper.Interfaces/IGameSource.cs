@@ -26,6 +26,6 @@ namespace GameHelper.Interfaces
 
         IRepository<BuffInfo> BuffRepository { get; }
 
-        IReadOnlyCollection<IUDP> UDPs { get; }
+        IReadOnlyCollection<IPortListener> UDPs { get; }
     }
 }

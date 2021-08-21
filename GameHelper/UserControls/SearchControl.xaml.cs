@@ -11,6 +11,8 @@ namespace GameHelper.UserControls
 
         public event Action<Type, string> ConditionsChanged;
 
+        public Tuple<Type, string> Conditions { get; private set; }
+
         public SearchControl()
         {
             InitializeComponent();
@@ -33,7 +35,10 @@ namespace GameHelper.UserControls
         {
             if (e.Key == Key.Enter)
                 if (TryParse(SelectedType, _tb.Text))
-                    ConditionsChanged?.Invoke(SelectedType, _tb.Text);
+                {
+                    Conditions = new Tuple<Type, string>(SelectedType, _tb.Text);
+                    ConditionsChanged?.Invoke(Conditions.Item1, Conditions.Item2);
+                }
         }
 
         private bool TryParse(Type type, string text)
@@ -61,7 +66,8 @@ namespace GameHelper.UserControls
 
         private void OnClearClick(object sender, RoutedEventArgs e)
         {
-            ConditionsChanged?.Invoke(SelectedType, null);
+            Conditions = null;
+            ConditionsChanged?.Invoke(null, null);
         }
     }
 }

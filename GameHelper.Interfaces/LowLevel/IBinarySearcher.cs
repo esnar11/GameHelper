@@ -6,19 +6,19 @@ namespace GameHelper.Interfaces.LowLevel
 {
     public interface IBinarySearcher
     {
-        IReadOnlyCollection<BinarySearchMatch> Search<T>(IReadOnlyCollection<byte[]> items, T value);
+        IReadOnlyCollection<BinarySearchMatch> Search<T>(IReadOnlyCollection<Datagram> items, T value);
     }
 
     [DebuggerDisplay("{Position}")]
     public class BinarySearchMatch
     {
-        public byte[] Data { get; }
+        public Datagram Data { get; }
 
         public int Position { get; }
 
         public int Length { get; }
 
-        public BinarySearchMatch(byte[] data, int position, int length)
+        public BinarySearchMatch(Datagram data, int position, int length)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Position = position;

@@ -17,6 +17,7 @@
                 <MenuItem Header="DPS..." Click="OnDPSClick"/>
                 <MenuItem Header="Buffs..." Click="OnBufsClick"/>
                 <MenuItem Header="Yourself HP..." Click="OnYourselfHPClick"/>
+                <MenuItem Header="Percents ruler..." Click="OnRulerClick"/>
             </MenuItem>
             <MenuItem Header="Tools">
                 <MenuItem Header="Create name (En -> Ru)..." Click="OnCreateNameClick"/>

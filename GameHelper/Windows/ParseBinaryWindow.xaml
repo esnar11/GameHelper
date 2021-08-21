@@ -18,7 +18,14 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <userControls:SearchControl x:Name="_searchControl" Grid.ColumnSpan="2" Margin="5"/>
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="_cbDirection" SelectionChanged="OnDirectionSelectionChanged"/>
+            <userControls:SearchControl x:Name="_searchControl" Margin="5" Grid.Column="1"/>
+        </Grid>
 
         <ListBox x:Name="_lb" SelectionChanged="OnSelectionChanged" Grid.Row="1" Grid.RowSpan="2" Margin="5">
             <ListBox.ItemTemplate>

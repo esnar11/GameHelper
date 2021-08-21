@@ -47,7 +47,8 @@ namespace GameHelper
 
             var sources = new IGameSource[]
             {
-                new Albion.GameSource()
+                new Albion.GameSource(),
+                new Tera.GameSource()
             };
             foreach (var gameSource in sources.OrderByDescending(gs => gs.Name))
             {
@@ -179,7 +180,7 @@ namespace GameHelper
 
         private void OnCreateNameClick(object sender, RoutedEventArgs e)
         {
-            new CreateNameWindow().Show();
+            new CreateNameWindow { Owner = this }.Show();
         }
 
         private void OnDPSClick(object sender, RoutedEventArgs e)
@@ -250,6 +251,19 @@ namespace GameHelper
                     dataStorage.Load(file);
                 new ParseBinaryWindow(dataStorage.Items) { Owner = this }.Show();
             }
+        }
+
+        private void OnRulerClick(object sender, RoutedEventArgs e)
+        {
+            var rulerWindow = new GameWindow(new RulerControl())
+            {
+                Tag = nameof(RulerControl),
+                Width = 400,
+                Height = 50
+            };
+            rulerWindow.Closed += GameWindow_Closed;
+            rulerWindow.Show();
+            _windows.Add(rulerWindow);
         }
     }
 }

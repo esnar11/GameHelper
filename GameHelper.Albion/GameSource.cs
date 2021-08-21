@@ -14,7 +14,7 @@ namespace GameHelper.Albion
         private IPhotonReceiver _receiver;
         private ICaptureDevice _device;
         private readonly ICollection<ushort> _udpPorts = new List<ushort>();
-        private readonly ICollection<IUDP> _udps = new List<IUDP>();
+        private readonly ICollection<IPortListener> _udps = new List<IPortListener>();
 
         public string Name => "Albion";
         
@@ -39,10 +39,10 @@ namespace GameHelper.Albion
 
             foreach (var udpPort in _udpPorts)
             {
-                IUDP udp = new UDP(_device, udpPort);
-                _udps.Add(udp);
-                udp.OnData += Udp_OnData;
-                udp.Connect();
+                IPortListener portListener = new PortListener(_device, udpPort, ChannelProtocol.UDP);
+                _udps.Add(portListener);
+                portListener.DataCaptured += Udp_OnData;
+                portListener.Connect();
             }
 
             _device.StartCapture();
@@ -57,7 +57,7 @@ namespace GameHelper.Albion
 
             foreach (var udp in _udps)
             {
-                udp.OnData -= Udp_OnData;
+                udp.DataCaptured -= Udp_OnData;
                 udp.Disconnect();
             }
 
@@ -65,9 +65,9 @@ namespace GameHelper.Albion
             Disconnected?.Invoke();
         }
 
-        private void Udp_OnData(byte[] data)
+        private void Udp_OnData(Datagram datagram)
         {
-            _receiver.ReceivePacket(data);
+            _receiver.ReceivePacket(datagram.Data);
         }
 
         public event Action Connected;
@@ -81,6 +81,6 @@ namespace GameHelper.Albion
         
         public IRepository<BuffInfo> BuffRepository => new BuffRepository();
 
-        public IReadOnlyCollection<IUDP> UDPs => _udps.ToArray();
+        public IReadOnlyCollection<IPortListener> UDPs => _udps.ToArray();
     }
 }
