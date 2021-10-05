@@ -22,16 +22,19 @@ namespace GameHelper.Utils
         {
             if (string.IsNullOrEmpty(processName)) throw new ArgumentNullException(nameof(processName));
 
-            return new ushort[] { 57270, 57271, 55006 };
-
-            //var processes = Process.GetProcessesByName(processName);
-            //return GetPorts(processes.Single().Id, "TCP");
+            var processes = Process.GetProcessesByName(processName);
+            return GetPorts(processes.Single().Id, "TCP");
         }
 
         public IReadOnlyCollection<Channel> GetChannels(string processName)
         {
-            if (processName.Equals("NW"))
-                return new[] { new Channel(27000, ChannelProtocol.UDP) };
+            if (processName.Equals("NewWorld"))
+            {
+                return GetTcpPorts(processName)
+                    .Select(p => new Channel(p, ChannelProtocol.TCP))
+                    //.Union(new[] { new Channel(27000, ChannelProtocol.UDP) })
+                    .ToArray();
+            }
 
             throw new NotImplementedException();
         }

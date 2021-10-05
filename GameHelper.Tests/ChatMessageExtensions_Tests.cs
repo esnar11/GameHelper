@@ -1,6 +1,6 @@
 ﻿using System;
-using GameHelper.Engine;
 using GameHelper.Interfaces;
+using GameHelper.Utils;
 using NUnit.Framework;
 
 namespace GameHelper.Tests

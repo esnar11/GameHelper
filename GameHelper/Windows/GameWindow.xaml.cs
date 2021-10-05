@@ -11,7 +11,7 @@ namespace GameHelper.Windows
     {
         private const char PartSeparator = '|';
         private const char ValueSeparator = ';';
-        private const double DSize = 0.025;
+        private const double DSize = 0.0125;
 
         private Point _startDragPoint;
         private Point _windowStartPoint;
@@ -56,21 +56,22 @@ namespace GameHelper.Windows
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             if (IsMouseCaptured)
-            {
-                var pos = PointToScreen(e.GetPosition(this));
-                var dx = pos.X - _startDragPoint.X;
-                var dy = pos.Y - _startDragPoint.Y;
-                if (_resizing)
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0 && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
                 {
-                    Width = _windowStartSize.Width + dx;
-                    Height = _windowStartSize.Height + dy;
+                    var pos = PointToScreen(e.GetPosition(this));
+                    var dx = pos.X - _startDragPoint.X;
+                    var dy = pos.Y - _startDragPoint.Y;
+                    if (_resizing)
+                    {
+                        Width = _windowStartSize.Width + dx;
+                        Height = _windowStartSize.Height + dy;
+                    }
+                    else
+                    {
+                        Left = _windowStartPoint.X + dx;
+                        Top = _windowStartPoint.Y + dy;
+                    }
                 }
-                else
-                {
-                    Left = _windowStartPoint.X + dx;
-                    Top = _windowStartPoint.Y + dy;
-                }
-            }
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

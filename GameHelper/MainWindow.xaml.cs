@@ -134,7 +134,7 @@ namespace GameHelper
         private void TuneControls()
         {
             _miDiconnect.IsEnabled = _appContext.GameSource != null;
-            _miCaptureUDP.IsEnabled = _appContext.GameSource != null && _appContext.GameSource.UDPs.Any();
+            _miCapture.IsEnabled = _appContext.GameSource != null && _appContext.GameSource.PortListeners.Any();
         }
 
         private void OnAnalyzeIncomeClick(object sender, RoutedEventArgs e)
@@ -236,9 +236,9 @@ namespace GameHelper
             new ChatHistoryWindow(new IChatHistoryReadonly[0]).Show();
         }
 
-        private void OnCaptureUdp(object sender, RoutedEventArgs e)
+        private void OnCapture(object sender, RoutedEventArgs e)
         {
-            new UdpCaptureWindow(_appContext.GameSource.UDPs) { Owner = this }.Show();
+            new UdpCaptureWindow(_appContext.GameSource.PortListeners) { Owner = this }.Show();
         }
 
         private void OnParseBinary(object sender, RoutedEventArgs e)

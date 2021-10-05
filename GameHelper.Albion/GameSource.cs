@@ -81,6 +81,6 @@ namespace GameHelper.Albion
         
         public IRepository<BuffInfo> BuffRepository => new BuffRepository();
 
-        public IReadOnlyCollection<IPortListener> UDPs => _udps.ToArray();
+        public IReadOnlyCollection<IPortListener> PortListeners => _udps.ToArray();
     }
 }

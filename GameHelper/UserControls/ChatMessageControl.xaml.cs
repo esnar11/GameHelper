@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using GameHelper.Engine;
 using GameHelper.Interfaces;
+using GameHelper.Utils;
 
 namespace GameHelper.UserControls
 {

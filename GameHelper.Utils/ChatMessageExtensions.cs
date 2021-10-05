@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameHelper.Interfaces;
 
-namespace GameHelper.Engine
+namespace GameHelper.Utils
 {
     public static class ChatMessageExtensions
     {

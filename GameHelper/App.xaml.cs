@@ -15,9 +15,8 @@ namespace GameHelper
 
         public static void ShowError(Exception error)
         {
-            var message = error.Message;
-            if (error.GetBaseException() != error)
-                message += Environment.NewLine + Environment.NewLine + error.GetBaseException().Message;
+            var e = error.GetBaseException();
+            var message = e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace;
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 

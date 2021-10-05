@@ -27,7 +27,24 @@ namespace GameHelper.Utils
         {
             if (typeof(T) == typeof(string))
                 if (value is string s)
-                    return SearchString(data, s);
+                {
+                    var matches = SearchString(data, s);
+                    /*
+                    if (!matches.Any())
+                    {
+                        using var memStream = new MemoryStream(data.Data);
+                        var zipStream = new GZipStream(memStream, CompressionMode.Decompress);
+                        using var resultStream = new MemoryStream();
+                        zipStream.CopyTo(resultStream);
+                        zipStream.Flush();
+                        resultStream.Position = 0;
+                        if (resultStream.Length > 0)
+                            return SearchString(new Datagram(resultStream.ToArray(), data.Direction), s);
+                        return NoMatches;
+                    }
+                    */
+                    return matches;
+                }
 
             if (typeof(T) == typeof(byte))
                 if (value is byte b)

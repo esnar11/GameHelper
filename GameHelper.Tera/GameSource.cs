@@ -14,14 +14,14 @@ namespace GameHelper.Tera
         private readonly ICollection<IPortListener> _listeners = new List<IPortListener>();
         private readonly EventsSource _eventsSource = new EventsSource();
 
-        public string Name => "NW";
+        public string Name => "Tera";
 
         public Character Avatar { get; }
 
         public void Connect(string deviceName)
         {
             var detector = new PortDetector();
-            var channels = detector.GetChannels("NW");
+            var channels = detector.GetChannels("Tera");
 
             _device = CaptureDeviceList.Instance.Single(d => d.Name == deviceName);
             _device.Open(DeviceMode.Promiscuous, (int)TimeSpan.FromSeconds(1).TotalMilliseconds);
@@ -68,6 +68,6 @@ namespace GameHelper.Tera
         
         public IRepository<BuffInfo> BuffRepository { get; }
 
-        public IReadOnlyCollection<IPortListener> UDPs => _listeners.ToArray();
+        public IReadOnlyCollection<IPortListener> PortListeners => _listeners.ToArray();
     }
 }
