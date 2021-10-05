@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Interop;
+using ChatMonitor.Capture;
 
 namespace ChatMonitor
 {
-    public class CapturableWindowDetector
+    public class CapturableWindowDetector: IWindowPicker
     {
         private static readonly string[] _ignoreProcesses =
         {
@@ -56,6 +57,16 @@ namespace ChatMonitor
             }, IntPtr.Zero);
 
             return list;
+        }
+
+        public CapturableWindow SelectedWindow { get; set; }
+
+        public IntPtr PickCaptureTarget(IntPtr hWnd)
+        {
+            //new WindowInteropHelper(this).Owner = hWnd;
+            //ShowDialog();
+
+            return SelectedWindow.Handle;
         }
     }
 
