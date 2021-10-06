@@ -14,13 +14,13 @@ namespace OpticalReader
 {
     public interface ICaptureEngine
     {
-        void Start();
-
         event Action<CaptureArea, IReadOnlyCollection<string>> TextCaptured;
     }
 
     public interface ICaptureEngineExt: ICaptureEngine
     {
+        void Start();
+
         event Action<CaptureArea, BitmapImage> ImageCaptured;
     }
 

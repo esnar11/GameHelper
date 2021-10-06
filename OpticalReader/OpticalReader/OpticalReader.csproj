@@ -43,7 +43,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Chat\" />
 	  <Folder Include="Winds\" />
 	</ItemGroup>
 

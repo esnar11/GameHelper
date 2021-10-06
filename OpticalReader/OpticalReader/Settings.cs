@@ -11,8 +11,8 @@ namespace OpticalReader
             {
                 Name = "NW_Chat",
                 Interval = TimeSpan.FromSeconds(2),
-                Point = new System.Drawing.Point(10, 200),
-                Size = new System.Drawing.Size(500, 600)
+                Point = new System.Drawing.Point(20, 800),
+                Size = new System.Drawing.Size(500, 250)
             }
         };
 
