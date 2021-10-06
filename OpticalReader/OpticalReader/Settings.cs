@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpticalReader.Chat;
 
 namespace OpticalReader
 {
@@ -11,11 +12,13 @@ namespace OpticalReader
             {
                 Name = "NW_Chat",
                 Interval = TimeSpan.FromSeconds(2),
-                Point = new System.Drawing.Point(20, 800),
-                Size = new System.Drawing.Size(500, 250)
+                Point = new System.Drawing.Point(20, 750),
+                Size = new System.Drawing.Size(500, 300)
             }
         };
 
         public IReadOnlyCollection<CaptureArea> CaptureAreas => _captureAreas;
+
+        public ChatSettings ChatSettings { get; } = new ChatSettings();
     }
 }

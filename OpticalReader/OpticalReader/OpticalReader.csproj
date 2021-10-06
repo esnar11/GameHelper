@@ -46,4 +46,8 @@
 	  <Folder Include="Winds\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\OpticalReader.Chat\OpticalReader.Chat.csproj" />
+	</ItemGroup>
+
 </Project>

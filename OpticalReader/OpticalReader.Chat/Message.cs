@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace OpticalReader.Chat.Model
+namespace OpticalReader.Chat
 {
     [DebuggerDisplay("[{Channel}] {Author}; {Text}")]
     public class Message
@@ -32,7 +32,7 @@ namespace OpticalReader.Chat.Model
             if (msg.Text != Text)
                 return false;
 
-            return true;
+            return msg.Text.StartsWith(Text, StringComparison.InvariantCultureIgnoreCase) || Text.StartsWith(msg.Text, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

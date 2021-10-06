@@ -1,7 +1,8 @@
 ﻿<Window x:Class="OpticalReader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="300" Width="400">
+        xmlns:controls="clr-namespace:OpticalReader.Chat.Controls"
+        Title="MainWindow" Height="900" Width="450" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource DefaultButton}"/>
@@ -11,7 +12,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-        </Grid.RowDefinitions>        
-        <Button Content="Settings..." HorizontalAlignment="Right" VerticalAlignment="Top" Click="OnSettingsClick"/>
+        </Grid.RowDefinitions>
+        <controls:ChatControl x:Name="_chatControl" Grid.RowSpan="2"/>
+        <Button Content="Settings..." HorizontalAlignment="Right" VerticalAlignment="Top" Click="OnSettingsClick" Background="#202020" Foreground="DarkGray"/>
     </Grid>
 </Window>

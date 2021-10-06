@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpticalReader.Chat.Model;
+using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("OpticalReader.Chat.Tests")]
 
 namespace OpticalReader.Chat
 {
@@ -12,11 +14,6 @@ namespace OpticalReader.Chat
 
     public class ChatParser : IChatParser
     {
-        private const string GlobalChannel = "O GLOBAL";
-        private const string GroupChannel = "O GROUP";
-        private const string AreaChannel = "O AREA";
-        private const string CompanyChannel = "O COMPANY";
-
         private readonly string _captureAreaName;
 
         private readonly Queue<Message> _queue = new Queue<Message>();
@@ -36,7 +33,7 @@ namespace OpticalReader.Chat
 
             foreach (var msg in messages)
             {
-                if (_queue.Any() && _queue.All(m => m.AreEquals(msg)))
+                if (_queue.Any(m => m.AreEquals(msg)))
                     continue;
 
                 msg.DateTime = DateTime.Now;
@@ -67,22 +64,65 @@ namespace OpticalReader.Chat
             return list;
         }
 
-        private static bool IsSign(string line)
-        {
-            return line.EndsWith(GlobalChannel) || line.EndsWith(GroupChannel) || line.EndsWith(AreaChannel) || line.EndsWith(CompanyChannel);
-        }
-
-        private static string ParseAuthor(string line)
+        internal static bool IsSign(string line)
         {
             var i = line.LastIndexOf(" ");
+            if (i < 0)
+                return false;
+            var lastWord = line.Substring(i + 1);
+            switch (lastWord)
+            {
+                case "GLOBAL":
+                case "GROUP":
+                case "AREA":
+                case "COMPANY":
+                case "RECRUITMENT":
+                case "FACTION":
+                case "SYSTEM":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        internal static string ParseAuthor(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return null;
+
+            var i = line.LastIndexOf(" ");
+            if (i < 0)
+                return null;
+
             i = line.Substring(0, i).LastIndexOf(" ");
+            if (i < 0)
+                return null;
+
             return line.Substring(0, i);
         }
 
         private static string ParseChannelName(string line)
         {
             var i = line.LastIndexOf(" ");
-            return line.Substring(i + 1);
+            switch (line.Substring(i + 1))
+            {
+                case "GLOBAL":
+                    return Chat.ChannelName_Global;
+                case "GROUP":
+                    return Chat.ChannelName_Group;
+                case "AREA":
+                    return Chat.ChannelName_Area;
+                case "COMPANY":
+                    return Chat.ChannelName_Guild;
+                case "RECRUITMENT":
+                    return Chat.ChannelName_Recruitment;
+                case "FACTION":
+                    return Chat.ChannelName_Faction;
+                case "SYSTEM":
+                    return Chat.ChannelName_System;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public event Action<Message> NewMessage;

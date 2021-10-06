@@ -9,6 +9,7 @@ namespace OpticalReader
         private readonly ICaptureEngineExt _captureEngine;
         private readonly Settings _settings = new Settings();
         private readonly IChatParser _chatParser;
+        private readonly IChat _chat;
 
         public MainWindow()
         {
@@ -16,12 +17,8 @@ namespace OpticalReader
             Loaded += MainWindow_Loaded;
             _captureEngine = new CaptureEngine(_settings.CaptureAreas);
             _chatParser = new ChatParser(_captureEngine, "NW_Chat");
-            _chatParser.NewMessage += _chatParser_NewMessage;
-        }
-
-        private void _chatParser_NewMessage(Chat.Model.Message message)
-        {
-            throw new System.NotImplementedException();
+            _chat = new Chat.Chat(_chatParser, _settings.ChatSettings);
+            _chatControl.Chat = _chat;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -31,8 +28,7 @@ namespace OpticalReader
 
         private void OnSettingsClick(object sender, RoutedEventArgs e)
         {
-            var window = new SettingsWindow(_settings, _captureEngine);
-            window.Owner = this;
+            var window = new SettingsWindow(_settings, _captureEngine) { Owner = this };
             window.ShowDialog();
         }
     }

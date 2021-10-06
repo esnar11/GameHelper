@@ -9,14 +9,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Windows.Globalization;
 using Windows.Media.Ocr;
+using OpticalReader.Chat;
 
 namespace OpticalReader
 {
-    public interface ICaptureEngine
-    {
-        event Action<CaptureArea, IReadOnlyCollection<string>> TextCaptured;
-    }
-
     public interface ICaptureEngineExt: ICaptureEngine
     {
         void Start();

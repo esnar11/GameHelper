@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="OpticalReader.Chat.Controls.MessageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:OpticalReader.Chat.Controls"
+             MinWidth="50" MinHeight="10">
+    <UserControl.Resources>
+        <controls:MessageForegroundConverter x:Key="_foregroundConverter"/>
+        <controls:MessageBackgroundConverter x:Key="_backgroundConverter"/>
+    </UserControl.Resources>
+    <Border BorderBrush="{Binding Converter={StaticResource _backgroundConverter}}" BorderThickness="1" Margin="2">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+                <GradientStop Color="#080808"/>
+                <GradientStop Color="#202020" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Message.Author}" Foreground="{Binding Converter={StaticResource _foregroundConverter}}" Margin="10, 2" FontWeight="Bold"/>
+            <TextBlock Text="{Binding Message.Text}" Foreground="{Binding Converter={StaticResource _foregroundConverter}}" TextWrapping="Wrap" Grid.Column="1" Margin="2"/>
+        </Grid>
+    </Border>
+</UserControl>
