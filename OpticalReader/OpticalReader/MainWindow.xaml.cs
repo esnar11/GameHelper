@@ -1,29 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
+using OpticalReader.Winds;
 
 namespace OpticalReader
 {
     public partial class MainWindow
     {
-        private readonly IReadOnlyCollection<CaptureArea> _captureAreas = new[]
-        {
-            new CaptureArea
-            {
-                Name = "NW_Chat",
-                Interval = TimeSpan.FromSeconds(2),
-                Point = new System.Drawing.Point(10, 200),
-                Size = new System.Drawing.Size(500, 600)
-            }
-        };
-        private readonly ICaptureEngine _captureEngine;
+        private readonly ICaptureEngineExt _captureEngine;
+        private readonly Settings _settings = new Settings();
 
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            _captureEngine = new CaptureEngine(_captureAreas);
-
+            _captureEngine = new CaptureEngine(_settings.CaptureAreas);
             _captureEngine.TextCaptured += TextCaptured;
         }
 
@@ -35,6 +25,13 @@ namespace OpticalReader
         private void TextCaptured(CaptureArea area, IReadOnlyCollection<string> lines)
         {
             lines.Equals(null);
+        }
+
+        private void OnSettingsClick(object sender, RoutedEventArgs e)
+        {
+            var window = new SettingsWindow(_settings, _captureEngine);
+            window.Owner = this;
+            window.ShowDialog();
         }
     }
 }

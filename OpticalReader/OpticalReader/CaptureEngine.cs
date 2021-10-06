@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Windows.Globalization;
 using Windows.Media.Ocr;
@@ -18,7 +19,12 @@ namespace OpticalReader
         event Action<CaptureArea, IReadOnlyCollection<string>> TextCaptured;
     }
 
-    public class CaptureEngine : ICaptureEngine
+    public interface ICaptureEngineExt: ICaptureEngine
+    {
+        event Action<CaptureArea, BitmapImage> ImageCaptured;
+    }
+
+    public class CaptureEngine : ICaptureEngineExt
     {
         private readonly IReadOnlyCollection<CaptureArea> _captureAreas;
         private readonly DispatcherTimer _timer;
@@ -63,6 +69,17 @@ namespace OpticalReader
 
                             var ocrResult = await _ocrEngine.RecognizeAsync(softwareBmp);
                             TextCaptured?.Invoke(captureArea, ocrResult.Lines.Select(ln => ln.Text).ToArray());
+
+                            if (ImageCaptured != null)
+                            {
+                                memory.Position = 0;
+                                var bitmapimage = new BitmapImage();
+                                bitmapimage.BeginInit();
+                                bitmapimage.StreamSource = memory;
+                                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+                                bitmapimage.EndInit();
+                                ImageCaptured.Invoke(captureArea, bitmapimage);
+                            }
                         }
                     }
                 }
@@ -82,5 +99,7 @@ namespace OpticalReader
         }
 
         public event Action<CaptureArea, IReadOnlyCollection<string>> TextCaptured;
+        
+        public event Action<CaptureArea, BitmapImage> ImageCaptured;
     }
 }
