@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GameHelper.AO;
 using GameHelper.Engine.Impl;
 using GameHelper.Interfaces;
 using GameHelper.UserControls;
@@ -264,6 +267,30 @@ namespace GameHelper
             rulerWindow.Closed += GameWindow_Closed;
             rulerWindow.Show();
             _windows.Add(rulerWindow);
+        }
+
+        private async void On_AO_EnableAddonsClick(object sender, RoutedEventArgs e)
+        {
+            ITool tool = new EnableAddonsTool("C:\\Games\\MyGames\\Аллоды Онлайн");
+            await RunTool(tool);
+        }
+
+        private async Task RunTool(ITool tool)
+        {
+            try
+            {
+                Cursor = Cursors.Wait;
+                await tool.RunAsync(CancellationToken.None);
+                MessageBox.Show("Done");
+            }
+            catch (Exception error)
+            {
+                App.ShowError(error);
+            }
+            finally
+            {
+                Cursor = null;
+            }
         }
     }
 }

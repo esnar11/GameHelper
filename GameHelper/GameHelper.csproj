@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameHelper.Albion\GameHelper.Albion.csproj" />
+    <ProjectReference Include="..\GameHelper.AO\GameHelper.AO.csproj" />
     <ProjectReference Include="..\GameHelper.Tera\GameHelper.Tera.csproj" />
   </ItemGroup>
 

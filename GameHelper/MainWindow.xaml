@@ -22,6 +22,9 @@
             <MenuItem Header="Tools">
                 <MenuItem Header="Create name (En -> Ru)..." Click="OnCreateNameClick"/>
                 <MenuItem Header="Chat history..." Click="OnChatHistoryClick"/>
+                <MenuItem Header="AO">
+                    <MenuItem Header="Enable addons" Click="On_AO_EnableAddonsClick"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Analyze">
                 <MenuItem x:Name="_miCapture" Header="Capture traffic..." Click="OnCapture"/>
