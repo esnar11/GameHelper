@@ -7,6 +7,7 @@ namespace OpticalReader.Chat.Tests
         [TestCase(null, null)]
         [TestCase("", null)]
         [TestCase("O GLOBAL", null)]
+        [TestCase("MaidenSharp AREA", "MaidenSharp")]
         public void ParseAuthor_Test(string line, string expected)
         {
             var res = ChatParser.ParseAuthor(line);

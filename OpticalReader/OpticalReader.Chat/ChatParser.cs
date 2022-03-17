@@ -14,6 +14,7 @@ namespace OpticalReader.Chat
 
     public class ChatParser : IChatParser
     {
+        private const int QueueSize = 50;
         private readonly string _captureAreaName;
 
         private readonly Queue<Message> _queue = new Queue<Message>();
@@ -38,7 +39,7 @@ namespace OpticalReader.Chat
 
                 msg.DateTime = DateTime.Now;
                 _queue.Enqueue(msg);
-                while (_queue.Count > 20)
+                while (_queue.Count > QueueSize)
                     _queue.Dequeue();
                 NewMessage?.Invoke(msg);
             }
@@ -90,15 +91,16 @@ namespace OpticalReader.Chat
             if (string.IsNullOrWhiteSpace(line))
                 return null;
 
-            var i = line.LastIndexOf(" ");
+            var i = line.LastIndexOf(" ", StringComparison.InvariantCultureIgnoreCase);
             if (i < 0)
                 return null;
 
-            i = line.Substring(0, i).LastIndexOf(" ");
+            var s = line.Substring(0, i);
+            i = s.LastIndexOf(" ", StringComparison.InvariantCultureIgnoreCase);
             if (i < 0)
-                return null;
-
-            return line.Substring(0, i);
+                return s.Length > 2 ? s : null;
+            else
+                return line.Substring(0, i);
         }
 
         private static string ParseChannelName(string line)

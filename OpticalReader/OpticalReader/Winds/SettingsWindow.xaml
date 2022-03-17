@@ -8,15 +8,32 @@
         <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBox}"/>
         <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultTextBlock}"/>
         <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBox}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource DefaultButton}"/>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
         <GroupBox Header="Areas" MaxWidth="384">
             <controls:TuneCaptureAreaControl x:Name="_tuneCaptureArea"/>
         </GroupBox>
+
+        <GroupBox Header="Ignore words" Grid.Column="1">
+            <TextBox x:Name="_tbIgnore" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+        </GroupBox>
+
+        <GroupBox Header="Highlight words" Grid.Column="2">
+            <TextBox x:Name="_tbHighlight" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+        </GroupBox>
+
+        <Button Content="Save" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Click="OnSaveClick"/>
     </Grid>
 </Window>

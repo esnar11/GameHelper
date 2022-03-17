@@ -2,14 +2,14 @@
 {
     public class ChatSettings
     {
-        public string[] HighlightWords { get; } =
+        public string[] HighlightWords { get; set; } =
         {
             "Tank"
         };
 
-        public string[] IgnoreWords { get; } =
+        public string[] IgnoreWords { get; set; } =
         {
-            "has reached", "Ukrain"
+            "has+reached", "Ukrain", "A6OP", "ADEKBAT", "lfg+tank", "lfg+DD"
         };
     }
 }

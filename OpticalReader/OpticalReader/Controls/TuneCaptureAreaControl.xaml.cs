@@ -7,7 +7,7 @@ namespace OpticalReader.Controls
     public partial class TuneCaptureAreaControl
     {
         private ICaptureEngineExt _captureEngine;
-        private Settings _settings;
+        private AppSettings _settings;
 
         public ICaptureEngineExt CaptureEngine
         {
@@ -23,7 +23,7 @@ namespace OpticalReader.Controls
 
         private CaptureArea SelectedArea => _cbArea.SelectedItem as CaptureArea;
 
-        public Settings Settings
+        public AppSettings Settings
         {
             get => _settings;
             set

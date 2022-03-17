@@ -7,7 +7,7 @@ namespace OpticalReader
     public partial class MainWindow
     {
         private readonly ICaptureEngineExt _captureEngine;
-        private readonly Settings _settings = new Settings();
+        private readonly AppSettings _settings = AppSettings.Load();
         private readonly IChatParser _chatParser;
         private readonly IChat _chat;
 
@@ -15,6 +15,7 @@ namespace OpticalReader
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+
             _captureEngine = new CaptureEngine(_settings.CaptureAreas);
             _chatParser = new ChatParser(_captureEngine, "NW_Chat");
             _chat = new Chat.Chat(_chatParser, _settings.ChatSettings);

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Windows.Globalization;
 using Windows.Media.Ocr;
+using IronOcr;
 using OpticalReader.Chat;
 
 namespace OpticalReader
@@ -56,10 +57,15 @@ namespace OpticalReader
 
                         //bmp.Save(@"C:\_\10\06\2.jpg", ImageFormat.Jpeg);
 
+                        var s = new IronTesseract().Read(bmp).Text;
+                        if (!string.IsNullOrEmpty(s))
+                            s.Equals(null);
+
                         using (var memory = new MemoryStream())
                         {
                             bmp.Save(memory, ImageFormat.Bmp);
                             memory.Position = 0;
+
                             var bmpDecoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(memory.AsRandomAccessStream());
                             var softwareBmp = await bmpDecoder.GetSoftwareBitmapAsync();
 

@@ -14,12 +14,22 @@
                 <GradientStop Color="#202020" Offset="1" />
             </LinearGradientBrush>
         </Border.Background>
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Copy">
+                    <MenuItem Header="Author" Click="OnCopyAuthor"/>
+                    <MenuItem Header="Text" Click="OnCopyText"/>
+                    <Separator/>
+                    <MenuItem Header="All" Click="OnCopyAll"/>
+                </MenuItem>
+            </ContextMenu>
+        </Border.ContextMenu>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding Message.Author}" Foreground="{Binding Converter={StaticResource _foregroundConverter}}" Margin="10, 2" FontWeight="Bold"/>
+            <TextBlock Text="{Binding Message.Author}" Foreground="{Binding Converter={StaticResource _foregroundConverter}}" Margin="10, 2" FontWeight="Bold" Opacity="0.5"/>
             <TextBlock Text="{Binding Message.Text}" Foreground="{Binding Converter={StaticResource _foregroundConverter}}" TextWrapping="Wrap" Grid.Column="1" Margin="2"/>
         </Grid>
     </Border>

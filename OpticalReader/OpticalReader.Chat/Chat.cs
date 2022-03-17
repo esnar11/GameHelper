@@ -7,6 +7,7 @@ namespace OpticalReader.Chat
     public interface IChat
     {
         event Action<IReadOnlyCollection<MessageWrapper>> MessagesChanged;
+        void Clear();
     }
 
     public class Chat : IChat
@@ -40,7 +41,7 @@ namespace OpticalReader.Chat
             {
                 var wrappers = _messages
                     .OrderByDescending(m => m.DateTime)
-                    .Where(Filter)
+                    .Where(m => !NeedHide(m, _settings))
                     .Take(25)
                     .OrderBy(m => m.DateTime)
                     .Select(CreateWrapper)
@@ -49,12 +50,22 @@ namespace OpticalReader.Chat
             }
         }
 
-        private bool Filter(Message m)
+        internal static bool NeedHide(Message m, ChatSettings settings)
         {
-            if (_settings.IgnoreWords.Any(w => m.Text.Contains(w)))
-                return false;
+            foreach (var ignoreWord in settings.IgnoreWords)
+                if (ignoreWord.Contains('+'))
+                {
+                    var iWords = ignoreWord.Split('+');
+                    if (iWords.All(iw => m.Text.Contains_IgnoreCase(iw)))
+                        return true;
+                }
+                else
+                {
+                    if (m.Text.Contains_IgnoreCase(ignoreWord))
+                        return true;
+                }
 
-            return true;
+            return false;
         }
 
         private MessageWrapper CreateWrapper(Message m)
@@ -73,6 +84,12 @@ namespace OpticalReader.Chat
         }
 
         public event Action<IReadOnlyCollection<MessageWrapper>> MessagesChanged;
+
+        public void Clear()
+        {
+            _messages.Clear();
+            RaiseChanges();
+        }
     }
 
     public class MessageWrapper

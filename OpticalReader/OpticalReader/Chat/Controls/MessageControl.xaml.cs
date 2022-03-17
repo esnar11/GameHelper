@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -10,6 +11,45 @@ namespace OpticalReader.Chat.Controls
         public MessageControl()
         {
             InitializeComponent();
+        }
+
+        private void OnCopyText(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var w = (MessageWrapper)DataContext;
+                Clipboard.SetText(w.Message.Text);
+            }
+            catch (Exception exception)
+            {
+                App.ShowError(exception);
+            }
+        }
+
+        private void OnCopyAuthor(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var w = (MessageWrapper)DataContext;
+                Clipboard.SetText(w.Message.Author);
+            }
+            catch (Exception exception)
+            {
+                App.ShowError(exception);
+            }
+        }
+
+        private void OnCopyAll(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var w = (MessageWrapper)DataContext;
+                Clipboard.SetText(string.Join(Environment.NewLine, w.Message.Author, w.Message.Text, w.Message.Channel, w.Message.DateTime));
+            }
+            catch (Exception exception)
+            {
+                App.ShowError(exception);
+            }
         }
     }
 

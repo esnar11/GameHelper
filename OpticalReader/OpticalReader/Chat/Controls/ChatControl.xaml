@@ -2,13 +2,27 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:OpticalReader.Chat.Controls" MinWidth="100" MinHeight="100">
-    <Grid>
-        <ListBox x:Name="_lb" Background="#101010">
+    <Grid Background="#101010">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Orientation="Horizontal">
+        </WrapPanel>
+
+        <ListBox x:Name="_lb" Background="#101010" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <controls:MessageControl MaxWidth="400"/>
+                    <controls:MessageControl MaxWidth="500"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Clear" Click="OnClearClick"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
     </Grid>
 </UserControl>

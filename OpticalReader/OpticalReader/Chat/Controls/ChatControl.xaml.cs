@@ -1,4 +1,6 @@
-﻿namespace OpticalReader.Chat.Controls
+﻿using System.Windows;
+
+namespace OpticalReader.Chat.Controls
 {
     public partial class ChatControl
     {
@@ -25,6 +27,11 @@
         public ChatControl()
         {
             InitializeComponent();
+        }
+
+        private void OnClearClick(object sender, RoutedEventArgs e)
+        {
+            _chat.Clear();
         }
     }
 }

@@ -26,13 +26,15 @@ namespace OpticalReader.Chat
             if (msg.Channel != Channel)
                 return false;
 
-            if (msg.Author != Author)
+            if (msg.Author.EqualsRatio(Author) < 0.9)
                 return false;
 
-            if (msg.Text != Text)
+            if (msg.Text.EqualsRatio(Text) < 0.9)
                 return false;
 
-            return msg.Text.StartsWith(Text, StringComparison.InvariantCultureIgnoreCase) || Text.StartsWith(msg.Text, StringComparison.InvariantCultureIgnoreCase);
+            return true;
+
+            //return msg.Text.StartsWith(Text, StringComparison.InvariantCultureIgnoreCase) || Text.StartsWith(msg.Text, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
