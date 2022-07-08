@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using GameHelper.Utils;
 using Microsoft.Win32;
 
 namespace GameHelper.Windows
@@ -20,7 +21,7 @@ namespace GameHelper.Windows
             _tbRuWords.Text = string.Join(Environment.NewLine,
                 "Нуб",
                 "Танк",
-                "Вор");
+                "Рысь");
             _tbLetters.Text = string.Join(Environment.NewLine,
                 "А -> A",
                 "В -> B",
@@ -40,7 +41,9 @@ namespace GameHelper.Windows
                 "р -> p",
                 "с -> c",
                 "у -> y",
-                "х -> x");
+                "х -> x",
+                "Ы -> bI",
+                "Ь -> b");
 
             TuneControls();
         }
@@ -73,7 +76,7 @@ namespace GameHelper.Windows
                     Letters = _tbLetters.Text
                         .Split(Environment.NewLine)
                         .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .Select(Letter.Parse)
+                        .Select(NameCreator.Letter.Parse)
                         .ToArray(),
                     CheckUpperCase = _cbCaps.IsChecked == true
                 };
@@ -115,15 +118,17 @@ namespace GameHelper.Windows
                 if (searchContext.CancellationToken.IsCancellationRequested)
                     break;
                 
-                var enWord = CreateWord(russianWord, searchContext.Letters);
-                if (!string.IsNullOrEmpty(enWord))
-                    searchContext.Add(enWord);
-
                 if (searchContext.CheckUpperCase)
                 {
-                    var enWORD = CreateWord(russianWord.ToUpper(), searchContext.Letters);
+                    var enWORD = NameCreator.CreateWord(russianWord.ToUpper(), searchContext.Letters);
                     if (!string.IsNullOrEmpty(enWORD))
                         searchContext.Add(enWORD);
+                }
+                else
+                {
+                    var enWord = NameCreator.CreateWord(russianWord, searchContext.Letters);
+                    if (!string.IsNullOrEmpty(enWord))
+                        searchContext.Add(enWord);
                 }
             }
 
@@ -137,41 +142,6 @@ namespace GameHelper.Windows
             TuneControls();
         }
 
-        public class Letter
-        {
-            public char Ru { get; set; }
-            
-            public char En { get; set; }
-
-            public static Letter Parse(string line)
-            {
-                line = line.Trim();
-                var ru = line[0];
-                var en = line[^1];
-
-                if (!IsRu(ru))
-                    throw new Exception($"{ru} - не русская буква");
-                if (!IsEn(en))
-                    throw new Exception($"{en} - not english letter");
-
-                return new Letter
-                {
-                    Ru = ru,
-                    En = en
-                };
-            }
-
-            public static bool IsRu(char value)
-            {
-                return (value >= 'а' && value <= 'я') || (value >= 'А' && value <= 'Я');
-            }
-
-            private static bool IsEn(char value)
-            {
-                return (value >= 'a' && value <= 'z') || (value >= 'A' && value <= 'Z') || value == '3' || value == '0';
-            }
-        }
-
         public class SearchContext
         {
             private readonly ICollection<string> _result = new List<string>();
@@ -180,7 +150,7 @@ namespace GameHelper.Windows
 
             public IReadOnlyCollection<string> RussianWords { get; set; }
 
-            public IReadOnlyCollection<Letter> Letters { get; set; }
+            public IReadOnlyCollection<NameCreator.Letter> Letters { get; set; }
 
             public bool CheckUpperCase { get; set; }
 
@@ -200,22 +170,6 @@ namespace GameHelper.Windows
             {
                 Completed?.Invoke();
             }
-        }
-
-        private static string CreateWord(string russian, IReadOnlyCollection<Letter> letters)
-        {
-            var list = new List<char>(russian.Length);
-
-            foreach (var ruCh in russian)
-            {
-                var letter = letters.FirstOrDefault(l => l.Ru == ruCh);
-                if (letter == null)
-                    return null;
-
-                list.Add(letter.En);
-            }
-
-            return new string(list.ToArray());
         }
 
         private void OnParseClick(object sender, RoutedEventArgs e)
@@ -257,7 +211,7 @@ namespace GameHelper.Windows
 
             foreach (var line in text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
             foreach (var w in line.Split(" ", StringSplitOptions.RemoveEmptyEntries))
-                if (w.Length > 2 && w.All(Letter.IsRu))
+                if (w.Length > 2 && w.All(NameCreator.Letter.IsRu))
                 {
                     var word = char.ToUpper(w[0]) + w.Substring(1);
                     if (!list.Contains(word))

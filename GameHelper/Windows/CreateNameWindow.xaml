@@ -29,11 +29,11 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Желаемые имена (рус.)" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="1" x:Name="_tbRuWords" VerticalScrollBarVisibility="Auto"/>
+            <TextBox Grid.Row="1" x:Name="_tbRuWords" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
             <Button Content="Parse words..." x:Name="_btnParse" Grid.Row="2" Click="OnParseClick"/>
 
             <TextBlock Text="Буквы (Ru -> En)" Grid.Column="1" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="_tbLetters" VerticalScrollBarVisibility="Auto"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="_tbLetters" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
 
             <TextBlock Text="Результаты поиска" Grid.Column="2" HorizontalAlignment="Center"/>
             <TextBox Grid.Row="1" x:Name="_tbResult" Grid.Column="2" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
