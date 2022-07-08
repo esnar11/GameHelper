@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup>
+        <DotNetTargetFramework>net6.0</DotNetTargetFramework>
+        <DotNetLangVersion>9.0</DotNetLangVersion>
+        <Authors>Sergey K.</Authors>
+    </PropertyGroup>
+</Project>
